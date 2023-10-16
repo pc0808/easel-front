@@ -1,6 +1,9 @@
+import { ObjectId } from "mongodb";
 import { User } from "./app";
-import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestDoc, FriendRequestNotFoundError } from "./concepts/friend";
-import { PostAuthorNotMatchError, PostDoc } from "./concepts/post";
+import { ContentAuthorNotMatchError, ContentDoc } from "./concepts/content";
+import { FollowingDoc } from "./concepts/following";
+import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestNotFoundError } from "./concepts/friend";
+import { TagsDoc } from "./concepts/tags";
 import { Router } from "./framework/router";
 
 /**
@@ -9,37 +12,66 @@ import { Router } from "./framework/router";
  */
 export default class Responses {
   /**
-   * Convert PostDoc into more readable format for the frontend by converting the author id into a username.
+   * Convert ContentDoc<string> into more readable format for the frontend by converting the author id into a username.
    */
-  static async post(post: PostDoc | null) {
+  static async post(post: ContentDoc<string> | null) {
     if (!post) {
       return post;
     }
     const author = await User.getUserById(post.author);
     return { ...post, author: author.username };
   }
+  /**
+   * Convert ContentDoc<Array<ObjectId>> into more readable format for the frontend by converting the author id into a username.
+   */
+  static async board(board: ContentDoc<Array<ObjectId>> | null) {
+    if (!board) {
+      return board;
+    }
+    const author = await User.getUserById(board.author);
+    return { ...board, author: author.username };
+  }
 
   /**
-   * Same as {@link post} but for an array of PostDoc for improved performance.
+   * Same as {@link post} but for an array of ContentDoc<string> for improved performance.
    */
-  static async posts(posts: PostDoc[]) {
+  static async posts(posts: ContentDoc<string>[]) {
     const authors = await User.idsToUsernames(posts.map((post) => post.author));
     return posts.map((post, i) => ({ ...post, author: authors[i] }));
   }
 
   /**
-   * Convert FriendRequestDoc into more readable format for the frontend
-   * by converting the ids into usernames.
+   * Same as {@link board} but for an array of ContentDoc<Array<ObjectId>> for improved performance.
    */
-  static async friendRequests(requests: FriendRequestDoc[]) {
-    const from = requests.map((request) => request.from);
-    const to = requests.map((request) => request.to);
-    const usernames = await User.idsToUsernames(from.concat(to));
-    return requests.map((request, i) => ({ ...request, from: usernames[i], to: usernames[i + requests.length] }));
+  static async boards(boards: ContentDoc<Array<ObjectId>>[]) {
+    const authors = await User.idsToUsernames(boards.map((board) => board.author));
+    return boards.map((board, i) => ({ ...board, author: authors[i] }));
+  }
+
+  /**
+   * converts followingDocs into keeping only 1 attribute
+   * 
+   * @param following An array of following instances taken from app's Following 
+   * @param follower indicates whether we keep followers/user1 (true) or following/user2 (false)
+   */
+  static async following(following: FollowingDoc[], followed: boolean) {
+    const users: ObjectId[] = following.map(user => (followed ? user.user1 : user.user2));
+    return users;
+  }
+
+  // given a list of tagsDoc read results, return just a list of the tagnames 
+  static async getTags(tags: TagsDoc[]) {
+    return tags.map(tag => (tag.tagName));
+  }
+
+  // given a list of tagsDoc read results, return just a list of the content
+  // assumes they all have same tag 
+  static async getContentWithTag(tags: TagsDoc[]) {
+    return tags.map(tag => (tag.content));
   }
 }
 
-Router.registerError(PostAuthorNotMatchError, async (e) => {
+Router.registerError(ContentAuthorNotMatchError, async (e) => {
   const username = (await User.getUserById(e.author)).username;
   return e.formatWith(username, e._id);
 });
