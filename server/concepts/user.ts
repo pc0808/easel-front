@@ -9,11 +9,15 @@ export interface UserDoc extends BaseDoc {
 
 export default class UserConcept {
   public readonly users = new DocCollection<UserDoc>("users");
+  // maps: each username to a profile 
 
   async create(username: string, password: string) {
     await this.canCreate(username, password);
     const _id = await this.users.createOne({ username, password });
-    return { msg: "User created successfully!", user: await this.users.readOne({ _id }) };
+    return {
+      msg: "User created successfully!",
+      user: await this.users.readOne({ _id }),
+    };
   }
 
   private sanitizeUser(user: UserDoc) {
@@ -62,11 +66,12 @@ export default class UserConcept {
   }
 
   async update(_id: ObjectId, update: Partial<UserDoc>) {
-    if (update.username !== undefined) {
+    const user = await this.getUserById(_id);
+    if (update.username && update.username !== user.username) {
       await this.isUsernameUnique(update.username);
     }
     await this.users.updateOne({ _id }, update);
-    return { msg: "User updated successfully!" };
+    return { msg: "User updated successfully!", user: await this.users.readOne(_id) };
   }
 
   async delete(_id: ObjectId) {
