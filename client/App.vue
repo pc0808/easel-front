@@ -22,23 +22,27 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <link rel="stylesheet" href="https://use.typekit.net/oov2wcw.css">
   <header>
     <nav>
       <div class="title">
         <img src="@/assets/images/logo.svg" />
         <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
+          <h1 class = "title">Easel</h1>
         </RouterLink>
       </div>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink :to="{ name: 'Home' }" :class="{ curr: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
         <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <RouterLink :to="{ name: 'Settings' }" :class="{ curr: currentRouteName == 'Settings' }"> Settings </RouterLink>
         </li>
         <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
+          <RouterLink :to="{ name: 'Login' }" :class="{ curr: currentRouteName == 'Login' }"> Login </RouterLink>
+        </li>
+        <li v-if="isLoggedIn">
+          <RouterLink :to="{ name: 'Profile' }" :class="{ curr: currentRouteName == 'Profile' }"> Profile </RouterLink>
         </li>
       </ul>
     </nav>
@@ -53,21 +57,17 @@ onBeforeMount(async () => {
 @import "./assets/toast.css";
 
 nav {
-  padding: 1em 2em;
-  background-color: lightgray;
+  padding: 1em 6em;
+  background-color: #111;
+  color: #eee;
   display: flex;
   align-items: center;
 }
-
-h1 {
-  font-size: 2em;
-  margin: 0;
-}
-
 .title {
   display: flex;
   align-items: center;
   gap: 0.5em;
+  color: #eee;
 }
 
 img {
@@ -76,8 +76,9 @@ img {
 
 a {
   font-size: large;
-  color: black;
+  color: #ddd;
   text-decoration: none;
+  font-family: century-gothic;
 }
 
 ul {
@@ -89,7 +90,12 @@ ul {
   gap: 1em;
 }
 
-.underline {
-  text-decoration: underline;
+.curr {
+  font-weight: bold;
+  color: aqua;
+}
+
+h1.title{
+  font-size: 200%;
 }
 </style>
