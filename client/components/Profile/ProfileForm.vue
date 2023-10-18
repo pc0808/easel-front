@@ -17,10 +17,9 @@ let biography = currBiography.value;
 
 async function update() {
   await updateProfile({ avatar, biography });
-  displayMode.value = true; 
-  console.log(avatar, biography); 
   imgSrc = currAvatar.value; 
   console.log("updated?", currAvatar.value, currBiography.value); 
+  displayMode.value = true; 
 }
 
 function startEdit() { 
@@ -60,6 +59,7 @@ function startEdit() {
       </fieldset>
     </form>
   </div>
+  
 </template>
 
 <style scoped>

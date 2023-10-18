@@ -10,7 +10,8 @@ export const useProfileStore = defineStore(
     const currBiography = ref("");
 
     const getProfile = async (usrn: string) => {
-        await fetchy("/api/profiles/"+usrn, "GET", { });
+        const results = await fetchy("/api/profiles/"+usrn, "GET", { });
+        return results;
     }; 
     const getCurrentProfile = async () => {
         try {

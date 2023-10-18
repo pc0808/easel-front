@@ -14,6 +14,20 @@ button.button-error {
   background: var(--red);
 }
 
+button{
+  background: none;
+  border: solid 1px #ddd;
+  font-size: medium;
+  padding: 5% 10%;
+  color: #ddd;
+  font-family: century-gothic;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 0.5em;
+  margin: 0 -10%;
+  text-align: center;
+}
+
 a.button {
   color: #212529;
   background-color: #f1f3f5;
@@ -39,4 +53,8 @@ h1 {
 body{ 
   background-color: #191919;
   color: #ddd;
+}
+
+legend{
+  color: #fff;
 }
