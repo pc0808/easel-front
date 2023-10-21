@@ -18,7 +18,6 @@ async function search(){
     console.log("sending req for: ", author.value);
     const result = await getProfile(author.value); 
     
-    
     username = author.value;
     biography = result.biography; 
     avatar = (result.avatar)? result.avatar: DEFAULT_AVATAR;  
