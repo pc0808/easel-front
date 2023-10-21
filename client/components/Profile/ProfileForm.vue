@@ -1,57 +1,53 @@
 <script setup lang="ts">
-//import router from "@/router";
 import { useProfileStore } from "@/stores/profile";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useUserStore } from "../../stores/user";
-const DEFAULT_AVATAR = "../assets/images/defaultAvatar.png"; 
+import { uploadImageGetURL } from "../../utils/firebase";
 
 const { currentUsername } = storeToRefs(useUserStore()); 
-const {updateProfile} = useProfileStore(); 
-const { currAvatar, currBiography } = storeToRefs(useProfileStore()); 
-let displayMode = ref(true); 
+const { updateProfile, getProfile} = useProfileStore(); 
 
-let imgSrc = (currAvatar.value)? currAvatar.value: DEFAULT_AVATAR;  //SETTING DEFAULT VALUES 
-let avatar = currAvatar.value;
-let biography = currBiography.value; 
-
+let avatar = ref();
+let biography = "";
+ 
 async function update() {
-  await updateProfile({ avatar, biography });
-  imgSrc = currAvatar.value; 
-  console.log("updated?", currAvatar.value, currBiography.value); 
-  displayMode.value = true; 
+  const imageurl = await uploadImageGetURL(avatar);
+  console.log("imageurl: ", imageurl); 
+  if(imageurl){
+    await updateProfile({avatar: imageurl})
+  } if(biography){
+    await updateProfile({biography}); 
+  }
+
+  const updated = await getProfile(currentUsername.value); 
+  console.log(updated.avatar, updated.biography); 
+
+  window.location.reload(); 
 }
 
-function startEdit() { 
-  displayMode.value = false;
-  console.log(currAvatar.value, currBiography.value); 
-  console.log("whoa", avatar, biography); 
-}; 
+function setAvatar(event: any){
+  avatar.value = event.target.files[0]; 
+  console.log('hello', avatar.value); 
+}
+const props = defineProps(["currBiography", "editButton"]);
+const currBiography = props.currBiography; 
 
 </script>
 
 <template>
-  <div v-if="displayMode" :class="{ active: displayMode }" class = "view">
-  <h2>Profile: </h2>
-    <h3> {{ currentUsername }} </h3>
-    <img :src=imgSrc>
-    <span> {{ currBiography }}</span>
-    <p></p>
-    <button class="profileButton" v-on:click="startEdit()">
-      Edit Profile
-    </button>
-  </div>
-  <div v-else class="view" :class="{ active: !displayMode }">
+  <div class="container">
     <form class="pure-form pure-form-aligned" @submit.prevent="update" >
       <h3>Update Profile</h3>
       <fieldset>
         <div class="pure-control-group">
           <label for="aligned-avatar">Avatar</label>
-          <input v-model.trim="avatar" type="text" id="aligned-avatar" placeholder=currAvatar />
+          <input type="file" id="aligned-avatar" accept="image/png, image/jpeg"
+          :onchange=setAvatar>
         </div>
         <div class="pure-control-group">
           <label for="aligned-bio">Biography</label>
-          <input type="biography" v-model.trim="biography" id="aligned-bio" placeholder=currBiography />
+          <input type="biography" v-model.trim="biography" id="aligned-bio" :placeholder=currBiography />
         </div>
         <div class="pure-controls">
           <button type="submit" class="profileButton">Submit</button>
@@ -59,7 +55,6 @@ function startEdit() {
       </fieldset>
     </form>
   </div>
-  
 </template>
 
 <style scoped>
@@ -67,26 +62,6 @@ h3 {
   display: flex;
   justify-content: center;
   text-align: center;
-}
-.profileButton{
-  background: none;
-  border: solid 1px #ddd;
-  font-size: medium;
-  padding: 5% 10%;
-  color: #ddd;
-  font-family: century-gothic;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-radius: 0.5em;
-  margin: 0 -10%;
-  text-align: center;
-}
-
-.profileButton:hover{
-  font-weight: bold;
-  color: #191919;
-  background-color: aqua;
-  border-color: aqua;
 }
 
 .active{
