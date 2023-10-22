@@ -274,19 +274,31 @@ class Routes {
     const users = await Following.getFollowing(userID);
     return { msg: "read successful", users: await Responses.following(users, false) };
   }
+  @Router.patch("/following/:user1&:user2")
+  async followUser2(user1: string, user2: string) {
+    const user1id = (await User.getUserByUsername(user1))._id;
+    const user2id = (await User.getUserByUsername(user2))._id;
+    const following = await Following.getFollowing(user1id);
+
+    console.log(user1id, user2id, following);
+
+    if (new Set(await Responses.following(following, false)).has(user2id))
+      return { msg: "read successful", followUser2: true };
+    else return { msg: "read successful", followUser2: false };
+  }
   @Router.get("/followers/:username")
   async getFollowers(username: string) {
     const userID = (await User.getUserByUsername(username))._id;
     const users = await Following.getFollowers(userID);
     return { msg: "read successful", users: await Responses.following(users, true) }
   }
-  @Router.post("/following/:username")
+  @Router.post("/follow/:username")
   async followUser(session: WebSessionDoc, username: string) {
     const user1 = WebSession.getUser(session);
     const user2 = (await User.getUserByUsername(username))._id;
     return await Following.followUser(user1, user2);
   }
-  @Router.post("/followers/:username")
+  @Router.post("/unfollow/:username")
   async unfollowUser(session: WebSessionDoc, username: string) {
     const user1 = WebSession.getUser(session);
     const user2 = (await User.getUserByUsername(username))._id;

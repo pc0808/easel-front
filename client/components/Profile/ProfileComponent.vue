@@ -31,17 +31,27 @@ function switchEdit() {
 }
 
 onBeforeMount(async () => {
-  console.log("on before mount");
-  if(isSelf) return;
+  if(isSelf.value) return;
   const url = "/api/following/"+currentUsername.value+"&"+props.profile.username; 
   const result = await fetchy(url, "PATCH", {} ); 
-  console.log(result); 
-  // followText.value = (result.followUser2)? "Unfollow": "Follow"; 
-  // loaded.value = true; 
+  followText.value = (result.followUser2)? "Unfollow": "Follow"; 
+  loaded.value = true; 
 });
 
 async function followUnfollow() {
-  
+  if(followText.value === "Follow"){
+    followText.value = "Loading..."; //wait for stuff 
+
+    const url = "/api/follow/"+props.profile.username; 
+    await fetchy(url, "POST", {} ); 
+    followText.value = "Unfollow";
+  } else{
+    followText.value = "Loading..."; //wait for stuff 
+
+    const url = "/api/unfollow/"+props.profile.username; 
+    await fetchy(url, "POST", {} ); 
+    followText.value = "Follow"; 
+  }
 }
 
 
@@ -55,8 +65,8 @@ async function followUnfollow() {
       <p>{{ props.profile.biography }}</p>
       <button v-if="isSelf"
        v-on:click="switchEdit()" id="editButton">Edit</button>
-      <button v-if="loaded && !isSelf" 
-      v-on:click="followUnfollow()">{{followText.valueOf}}</button>
+      <button v-if="loaded && !isSelf" style="margin-top: 1em;"
+      v-on:click="followUnfollow()">{{followText}}</button>
     </span>
   </section>
 

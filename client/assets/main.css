@@ -32,8 +32,8 @@ button:hover{
   color: #191919;
   background-color: aqua;
   border-color: aqua;
+  cursor: pointer;
 }
-
 
 a.button {
   color: #212529;
@@ -92,6 +92,7 @@ button[type=submit]{
 button[type=submit]:hover{
   background-color: aqua;
   border: none;
+  cursor: grab;
 }
 form{
   background-color: transparent;
