@@ -4,11 +4,14 @@ import { Router, getExpressRouter } from "./framework/router";
 import { ObjectId } from "mongodb";
 import { Board, BoardTags, Following, Post, PostTags, Profile, User, WebSession } from "./app";
 import { ContentDoc, ContentOptions } from "./concepts/content";
+import { NotAllowedError } from "./concepts/errors";
 import { ProfileDoc } from "./concepts/profile";
 import { TagsDoc } from "./concepts/tags";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import Responses from "./responses";
+
+const imageLink = "https://firebasestorage.googleapis.com/v0/b/easel-e38a5.appspot.com";
 
 class Routes {
   ///////////////////////////////////////
@@ -122,6 +125,7 @@ class Routes {
   @Router.post("/posts")
   async createPost(session: WebSessionDoc, caption: string, content: string, options?: ContentOptions) {
     const user = WebSession.getUser(session);
+    if(content.indexOf(imageLink) !== 0) throw new NotAllowedError("Image not uploaded properly"); 
     const created = await Post.create(user, caption, content, options);
     return { msg: created.msg, post: await Responses.post(created.content) };
   }

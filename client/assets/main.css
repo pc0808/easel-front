@@ -69,4 +69,41 @@ legend{
 .avatar{
   width: 7em;
   height: 7em;
+  border-radius: 0.5em;
 }
+input[type=file]{
+  background-color: none;
+  color: #ddd;
+  border: solid 1px #ddd;
+  border-radius: 1em;
+}
+input[type=text]{
+  background-color: transparent;
+  border: solid 1px #ddd;
+  border-radius: 0.5em;
+  color: #bbb;
+}
+button[type=submit]{
+  background-color: transparent;
+  border: solid 1px #ddd;
+  border-radius: 0.5em;
+
+}
+button[type=submit]:hover{
+  background-color: aqua;
+  border: none;
+}
+form{
+  background-color: transparent;
+  border: solid 1px #ddd;
+}
+.profileBlock{
+  margin: 4% 20% 0;
+  gap: 0.5em;
+  padding: 2em 3em;
+  align-items: center;
+  border-radius: 1em;
+  border: solid 2px #ddd;
+  display: flex;
+}
+

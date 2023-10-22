@@ -1,43 +1,94 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
-import { formatDate } from "@/utils/formatDate";
-import { storeToRefs } from "pinia";
-import { fetchy } from "../../utils/fetchy";
+// import { useUserStore } from "@/stores/user";
+// import { storeToRefs } from "pinia";
+// import { fetchy } from "../../utils/fetchy";
+import { ref } from "vue";
+import { useProfileStore } from "../../stores/profile";
+import { usePostStore } from "../../utils/post";
 
-const props = defineProps(["post"]);
-const emit = defineEmits(["editPost", "refreshPosts"]);
-const { currentUsername } = storeToRefs(useUserStore());
+const { getPostID, getPostTags } = usePostStore(); 
+const { getProfile } = useProfileStore(); 
+const props = defineProps(["query"]);
+const postid = props.query.query.q; 
 
-const deletePost = async () => {
-  try {
-    await fetchy(`/api/posts/${props.post._id}`, "DELETE");
-  } catch {
-    return;
-  }
-  emit("refreshPosts");
+let loaded = ref(false); 
+let author = ref(""); 
+let caption = ref(""); 
+let avatar = ref("");
+let image = ref(""); 
+let dateCreated = ref<Date>();
+let dateUpdated = ref<Date>();
+let tags = ref<Array<string>>([]); 
+
+async function begin() {
+  const post = await getPostID(postid); 
+  author.value = post.author; 
+  caption.value = post.caption; 
+  image.value = post.content; 
+  dateCreated.value = post.dateCreated;
+  dateUpdated.value = post.dateUpdated;
+  
+  const tagsresult = await getPostTags(postid); 
+  for(const t of tagsresult) tags.value.push(t.tagName); 
+  
+  avatar.value = (await getProfile(author.value)).avatar; 
+  loaded.value = true; //allows post to actually display 
 };
+
+await begin();
+
+
 </script>
 
 <template>
-  <p class="author">{{ props.post.author }}</p>
+  <main>
+  <h1>Post?</h1>
+  <!-- <section v-if="loaded" class ="post" :class="{active: loaded.valueOf}">
+    <img class="avatar" :src="avatar.valueOf" />
+    <span class="author">{{ author.valueOf }}</span>
+    
+    <article class="timestamp">
+      <p v-if="dateCreated !== dateUpdated">Edited on: {{ formatDate(dateUpdated? dateUpdated: new Date()) }}</p>
+      <p v-else>Created on: {{ formatDate(dateCreated? dateCreated: new Date() ) }}</p>
+    </article>
+
+    <p class="caption">{{ caption.valueOf }}</p>
+    <img class="postImage" :src="image.valueOf" />
+    <p></p>
+    <span v-for="tag in tags">
+        <span class="tag">{{ tag }}</span>
+      </span>
+  </section> -->
+</main>
+
+  <!-- <p class="author">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
   <div class="base">
     <menu v-if="props.post.author == currentUsername">
       <li><button class="btn-small pure-button" @click="emit('editPost', props.post._id)">Edit</button></li>
       <li><button class="button-error btn-small pure-button" @click="deletePost">Delete</button></li>
     </menu>
-    <article class="timestamp">
-      <p v-if="props.post.dateCreated !== props.post.dateUpdated">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
-      <p v-else>Created on: {{ formatDate(props.post.dateCreated) }}</p>
-    </article>
-  </div>
+  
+  </div> -->
+  
 </template>
 
 <style scoped>
+.post{
+  border-radius: 1em;
+  border: solid 2px #ddd;
+  padding: 7% 10%;
+  display: none;
+}
 p {
   margin: 0em;
 }
-
+.postImage{
+  width: fit-content;
+}
+.active{
+  display: block;
+}
 .author {
   font-weight: bold;
   font-size: 1.2em;

@@ -12,7 +12,7 @@ let avatar = ref();
 let biography = "";
  
 async function update() {
-  const imageurl = await uploadImageGetURL(avatar);
+  const imageurl = await uploadImageGetURL(avatar, "avatars");
   console.log("imageurl: ", imageurl); 
   if(imageurl){
     await updateProfile({avatar: imageurl})
@@ -28,7 +28,6 @@ async function update() {
 
 function setAvatar(event: any){
   avatar.value = event.target.files[0]; 
-  console.log('hello', avatar.value); 
 }
 const props = defineProps(["currBiography", "editButton"]);
 const currBiography = props.currBiography; 
@@ -43,7 +42,7 @@ const currBiography = props.currBiography;
         <div class="pure-control-group">
           <label for="aligned-avatar">Avatar</label>
           <input type="file" id="aligned-avatar" accept="image/png, image/jpeg"
-          :onchange=setAvatar>
+          :onchange=setAvatar />
         </div>
         <div class="pure-control-group">
           <label for="aligned-bio">Biography</label>
@@ -63,7 +62,6 @@ h3 {
   justify-content: center;
   text-align: center;
 }
-
 .active{
   display: block;
 }

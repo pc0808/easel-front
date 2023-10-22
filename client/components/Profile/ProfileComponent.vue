@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { onBeforeMount, ref } from "vue";
+import { fetchy } from "../../utils/fetchy";
 import ProfileForm from "./ProfileForm.vue";
 
 const props = defineProps(["profile"]);
@@ -8,11 +10,14 @@ const emit = defineEmits(["updateProfile", "refreshProfile"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
 const biography = props.profile.biography; 
+let loaded = ref(false);  
+let followText = ref("");
+let isSelf = ref((props.profile.username === currentUsername.value)? true: false); 
 
 function switchEdit() {
   const form = document.getElementById("editForm");
   const button = document.getElementById("editButton");
-  console.log("Hello?");
+  
   if(form && button) {
     if(form.style.display === "block"){
       form.style.display = "none";
@@ -25,21 +30,38 @@ function switchEdit() {
   }
 }
 
+onBeforeMount(async () => {
+  console.log("on before mount");
+  if(isSelf) return;
+  const url = "/api/following/"+currentUsername.value+"&"+props.profile.username; 
+  const result = await fetchy(url, "PATCH", {} ); 
+  console.log(result); 
+  // followText.value = (result.followUser2)? "Unfollow": "Follow"; 
+  // loaded.value = true; 
+});
+
+async function followUnfollow() {
+  
+}
+
+
 </script>
 
 <template>
-  <section class="profile">
-    <p class="username">{{ props.profile.username }}</p>
-    <p>{{ props.profile.biography }}</p>
-    <img :src=props.profile.avatar class="avatar"/>
-    <div class="base">
-      <menu v-if="props.profile.username == currentUsername">
-        <li><button v-on:click="switchEdit()" id="editButton">Edit</button></li>
-        <div else id="editForm"  > 
-          <ProfileForm :currBiography="biography" />
-        </div>
-      </menu>
-    </div>
+  <section class="profileBlock">
+    <img :src=props.profile.avatar class="avatar" style="float:left">
+    <span class ="profileInfo">
+      <span class="username">{{ props.profile.username }}</span>
+      <p>{{ props.profile.biography }}</p>
+      <button v-if="isSelf"
+       v-on:click="switchEdit()" id="editButton">Edit</button>
+      <button v-if="loaded && !isSelf" 
+      v-on:click="followUnfollow()">{{followText.valueOf}}</button>
+    </span>
+  </section>
+
+  <section id="editForm" v-if="props.profile.username == currentUsername" > 
+    <ProfileForm :currBiography="biography" />
   </section>
 </template>
 
@@ -50,13 +72,21 @@ p {
 
 #editForm{
   display: none;
+  margin-top: 3em;
 }
 .username {
-  font-weight: bold;
-  font-size: 1.2em;
+  color: #ddd;
+  font-family: century-gothic;
+  letter-spacing: 1px;
+  font-size: 25px;
+  border: none;
+  padding: 0;
+  margin-bottom: 1em;
 }
-.profile{
-  justify-content: center;
+.profileInfo{
+  float:right; 
+  vertical-align: center;
+  margin-left: 2em;
 }
 
 menu {
@@ -73,7 +103,10 @@ menu {
   justify-content: space-between;
   align-items: center;
 }
-
+#editButton{
+  padding: 5px 8px;
+  margin-top: 1em;
+}
 .base article:only-child {
   margin-left: auto;
 }

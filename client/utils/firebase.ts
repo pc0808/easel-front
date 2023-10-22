@@ -21,9 +21,9 @@ const analytics = getAnalytics(app);
 export const storage = getStorage(app); 
 
 // image ref is actually a reference to the image file given by the user 
-export async function uploadImageGetURL(imageref:any){
+export async function uploadImageGetURL(imageref:any, folderName:string){
   if(imageref.value === undefined) return;
-  const imgRef = ref(storage, 'avatars/'+v4()+'.png', ); //v4() for random unique file name 
+  const imgRef = ref(storage, folderName+'/'+v4()+'.png', ); //v4() for random unique file name 
   const imgResponse = await uploadBytes(imgRef, imageref.value); 
 
   const imgSrc = await getDownloadURL(imgResponse.ref); 

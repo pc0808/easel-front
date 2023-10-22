@@ -14,7 +14,6 @@ let profile = ref<Record<string, string>>();
 async function updateProfile() {
   profile = await getProfile(currentUsername.value); 
   loaded.value = true; 
-  console.log(profile, loaded); 
   return profile
 }
 
