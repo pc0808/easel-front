@@ -7,10 +7,7 @@ export const usePostStore = defineStore(
     "post", 
     () => {
         const getAuthorPosts = async (author: string) => {
-            console.log("in post store", author); 
             const url = "/api/posts/"+author ; 
-            
-            console.log("in post store", url); 
             return await fetchy(url, "GET", { });
         }; 
         const getPostID = async(_id: string) => {

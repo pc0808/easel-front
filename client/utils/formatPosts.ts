@@ -4,5 +4,5 @@ export function sortDateUpdated(posts: Array<Record<string, string>>){
         if(post1.dateUpdated < post2.dateUpdated) return 1
         // ^ post1 is older than post 2 , so it will go to back of array; 
         return -1
-    })
+    }); 
 }

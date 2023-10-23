@@ -21,9 +21,12 @@ export const useUserStore = defineStore(
     };
 
     const loginUser = async (username: string, password: string) => {
-      await fetchy("/api/login", "POST", {
-        body: { username, password },
-      });
+      try{
+        await fetchy("/api/login", "POST", { body: { username, password } });
+        currentUsername.value = username; 
+      }catch{
+        currentUsername.value = ""; 
+      }
     };
 
     const updateSession = async () => {
@@ -49,6 +52,13 @@ export const useUserStore = defineStore(
       resetStore();
     };
 
+    const getUserByUsername = async(username: string) => {
+      return await fetchy("/api/users/"+username, "GET", {}); 
+    }
+
+    const getUserById = async(uid: string) => {
+      return await fetchy("/api/users/id/"+uid, "GET", {}); 
+    }
     return {
       currentUsername,
       isLoggedIn,
@@ -58,6 +68,8 @@ export const useUserStore = defineStore(
       logoutUser,
       updateUser,
       deleteUser,
+      getUserByUsername, 
+      getUserById, 
     };
   },
   { persist: true },

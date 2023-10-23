@@ -33,6 +33,11 @@ class Routes {
     return await User.getUsers(username);
   }
 
+  @Router.get("/users/id/:_id")
+  async getUserByID(_id: ObjectId) {
+    return await User.getUserById(_id);
+  }
+
   @Router.post("/users")
   async createUser(session: WebSessionDoc, username: string, password: string) {
     WebSession.isLoggedOut(session);
@@ -105,12 +110,9 @@ class Routes {
   ////////////////////////////////
   @Router.get("/posts/:author")
   async getPosts(author: string) {
-    console.log("in server: ", author); 
     let posts;
-    console.log("in server: ", author); 
     
     const id = (await User.getUserByUsername(author))._id;
-    console.log(id); 
     posts = await Post.getByAuthor(id);
     
     return Responses.posts(posts);
@@ -207,19 +209,20 @@ class Routes {
   ////////////////////////////////
   @Router.patch("/tags/posts")
   async getTaggedPosts(filter: Partial<TagsDoc>) {
-    console.log(filter, filter.tagName, filter.author, filter.content);
-    console.log((await PostTags.getContentFilter({ author: filter.author })).tags);
+    // console.log((await PostTags.getContentFilter({ author: filter.author })).tags);
+    const posts = (await PostTags.getContentFilter(filter)).tags;  
     return {
       msg: "Read successful",
-      posts: (await PostTags.getContentFilter(filter)).tags,
+      posts: await Responses.formatTags(posts),
     };
   }
 
   @Router.patch("/tags/boards")
   async getTaggedBoards(filter: Partial<TagsDoc>) {
+    const boards = (await BoardTags.getContentFilter(filter)).tags
     return {
       msg: "Read successful",
-      boards: (await BoardTags.getContentFilter(filter)).tags,
+      boards: Responses.formatTags(boards),
     };
   }
 
@@ -265,9 +268,9 @@ class Routes {
     return { msg: "successfully updated", tags: await Responses.getTags(tagsLeft) };
   }
 
-  ////////////////////////////////
-  // FRIENDS CONCEPT DOWN BELOW //
-  ////////////////////////////////
+  //////////////////////////////////
+  // FOLLOWING CONCEPT DOWN BELOW //
+  //////////////////////////////////
   @Router.get("/following/:username")
   async getFollowing(username: string) {
     const userID = (await User.getUserByUsername(username))._id;
@@ -279,10 +282,12 @@ class Routes {
     const user1id = (await User.getUserByUsername(user1))._id;
     const user2id = (await User.getUserByUsername(user2))._id;
     const following = await Following.getFollowing(user1id);
-
-    if (new Set(await Responses.following(following, false)).has(user2id))
-      return { msg: "read successful", followUser2: true };
-    else return { msg: "read successful", followUser2: false };
+    
+    let followUser2 = false; 
+    for(const user of await Responses.following(following, false)){ 
+      if(user.toString() === user2id.toString()) followUser2 = true; 
+    }
+    return { msg: "read successful", followUser2 };
   }
   @Router.get("/followers/:username")
   async getFollowers(username: string) {

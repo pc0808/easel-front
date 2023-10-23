@@ -47,13 +47,10 @@ export default class TagsConcept<T> {
   /** gets content matching the TagsDoc attributes in filter */
   async getContentFilter(filter: Partial<TagsDoc>) {
     this.sanitizeFilter(filter);
-    console.log("maybe here?");
-    console.log(filter);
-    console.log(await this.tagged.readMany({ author: filter.author }));
     const tags = await this.tagged.readMany(filter, {
       sort: { dateCreated: -1 },
     });
-    return { msg: "Read successful", tags: (tags ? tags : []) };
+    return { msg: "Read successful", tags: ((tags.length > 0) ? tags : []) };
   }
 
   /** taken from starter code, updates existing data */

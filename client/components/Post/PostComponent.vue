@@ -30,7 +30,8 @@ console.log(props);
         <img class="postImage" :src="post.content" style="margin-bottom: 1em;" />
       <p></p>
       <span v-for="tag in tags">
-        <span class="tag">{{ tag.tagName }}</span>
+        <RouterLink :to="{name: 'PostList', params: {tagname: tag.tagName}}" 
+        class="tag">{{ tag.tagName }}</RouterLink>
       </span>
     </section>
   </section>

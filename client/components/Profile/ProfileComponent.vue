@@ -42,6 +42,7 @@ onBeforeMount(async () => {
      //checks whether follow each other 
     url = "/api/following/"+currentUsername.value+"&"+props.profile.username; 
     const result = await fetchy(url, "PATCH", {} ); 
+    console.log(result); 
     followText.value = (result.followUser2)? "Unfollow": "Follow"; 
   }
 

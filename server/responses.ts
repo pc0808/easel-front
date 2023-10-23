@@ -41,6 +41,15 @@ export default class Responses {
   }
 
   /**
+   * 
+   * @param tags result of a tag call
+   * @returns a copy of the tagsDocs, supplemented with the posts' author usernames 
+   */
+  static async formatTags(tags: TagsDoc[]){
+    const authors = await User.idsToUsernames(tags.map((tag) => tag.author));
+    return tags.map((tag, i) => ({...tag, author: authors[i]})); 
+  }
+  /**
    * Same as {@link board} but for an array of ContentDoc<Array<ObjectId>> for improved performance.
    */
   static async boards(boards: ContentDoc<Array<ObjectId>>[]) {
@@ -59,6 +68,9 @@ export default class Responses {
     return users;
   }
 
+  static async formatFollowing(following: ObjectId[]){
+    return await User.idsToUsernames(following);
+  }
   // given a list of tagsDoc read results, return just a list of the tagnames 
   static async getTags(tags: TagsDoc[]) {
     return tags.map(tag => (tag.tagName));
@@ -69,6 +81,7 @@ export default class Responses {
   static async getContentWithTag(tags: TagsDoc[]) {
     return tags.map(tag => (tag.content));
   }
+
 }
 
 Router.registerError(ContentAuthorNotMatchError, async (e) => {
