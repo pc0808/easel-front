@@ -55,9 +55,8 @@ async function createPost () {
     for(const tag of tags.value){
       result = await updatePostWithTag(postid, tag); 
     }
-    console.log("all tags: ", result.tags, postid);
 
-    void router.push({path: "/post?q="+postid.string() }); //opens post w id 
+    void router.push({name: "Post", params: {id: postid.toString()} }); //opens post w id 
   } catch (_) {
     return;
   }
@@ -97,6 +96,7 @@ async function createPost () {
   padding: 1em;
   line-height: 1em;
   font-size: 18px;
+  margin: 5% 20%;
 }
 
 textarea {
@@ -109,17 +109,6 @@ textarea {
 }
 .subtitle{
   color: #ddd;
-}
-.tag{
-  background-color: #bbb;
-  color: #555;
-  padding: 2px 5px;
-  border-radius: 0.5em;
-  margin: 0 5px;
-}
-.tag:hover{
-  background-color: aqua;
-  /* cursor: URL("../../assets/images/xcursor.svg"), auto; */
 }
 #aligned-tags{
   background-color: transparent;

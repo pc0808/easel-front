@@ -35,15 +35,6 @@ button:hover{
   cursor: pointer;
 }
 
-a.button {
-  color: #212529;
-  background-color: #f1f3f5;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25em;
-  padding: 0.375em 0.75em;
-  text-decoration: none;
-}
-
 .column {
   display: flex;
   flex-direction: column;
@@ -116,4 +107,35 @@ form{
   border: none;
   padding: 0;
   margin-bottom: 0.5em;
+}
+.postBlock{
+  border-radius: 1em;
+  border: solid 2px #ddd;
+  margin: 5% 20%;
+  padding: 3% 5%;
+}
+.caption{
+  margin: 5em 0;
+  font-family: century-gothic;
+  font-size: 25px;
+}
+.routerLink{
+  text-decoration: none;
+  font-family: century-gothic;
+  font-size: 25px;
+  color: #ddd;
+}
+.routerLink:hover{
+  color: aqua;
+}
+.tag{
+  background-color: #bbb;
+  color: #555;
+  padding: 2px 5px;
+  border-radius: 0.5em;
+  margin: 0 5px;
+}
+.tag:hover{
+  background-color: aqua;
+  /* cursor: URL("../../assets/images/xcursor.svg"), auto; */
 }

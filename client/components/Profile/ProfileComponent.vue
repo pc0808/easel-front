@@ -6,6 +6,7 @@ import { fetchy } from "../../utils/fetchy";
 import ProfileForm from "./ProfileForm.vue";
 
 const props = defineProps(["profile"]);
+const username = props.profile.username; 
 const emit = defineEmits(["updateProfile", "refreshProfile"]);
 const { currentUsername } = storeToRefs(useUserStore());
 
@@ -37,19 +38,19 @@ function switchEdit() {
 onBeforeMount(async () => {
   let url;
   if(!isSelf.value){
+    console.log("should not be here");
      //checks whether follow each other 
     url = "/api/following/"+currentUsername.value+"&"+props.profile.username; 
     const result = await fetchy(url, "PATCH", {} ); 
     followText.value = (result.followUser2)? "Unfollow": "Follow"; 
   }
 
+  console.log("trying to get loaded", username);
   //get following+followed 
-  url = "/api/following/"+props.profile.username;
+  url = "/api/following/"+username;
   following.value = (await fetchy(url, "GET")).users; 
-  url = "api/followers/"+props.profile.username; 
+  url = "/api/followers/"+username; 
   followers.value = (await fetchy(url, "GET")).users;
-
-  console.log(followers.value); 
   loaded.value = true; 
 });
 
@@ -63,7 +64,7 @@ async function followUnfollow() {
 
     console.log("after follow: ", followers.value); 
     followText.value = "Unfollow";
-  } else{
+  } else{ //unfollows user
     followText.value = "Loading..."; //wait for stuff 
 
     const url = "/api/unfollow/"+props.profile.username; 
@@ -83,7 +84,7 @@ async function followUnfollow() {
     <img :src=props.profile.avatar class="avatar" style="float:left">
     <span class ="profileInfo">
       <span class="username">{{ props.profile.username }}</span>
-      <p>{{ props.profile.biography }}•</p>
+      <p>{{ props.profile.biography }}</p>
 
       <span v-if="loaded">
         <a class="follow" v-if="loaded">{{following.length}} following </a>• 

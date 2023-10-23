@@ -1,31 +1,32 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user";
-import { storeToRefs } from "pinia";
-import { ref } from "vue";
+// import { usePostStore } from "@/stores/post";
+import { onBeforeMount, ref } from "vue";
+import router from "../router";
+// import PostListComponent2 from "../components/Post/PostListComponent2.vue";
 import ProfileComponent from "../components/Profile/ProfileComponent.vue";
 import { useProfileStore } from "../stores/profile";
 
 const {getProfile} = useProfileStore(); 
-const { currentUsername } = storeToRefs(useUserStore());
+const username = router.currentRoute._value.params.user;
+// const { getAuthorPosts} = usePostStore(); 
+// let posts = ref<Array<Record<string, string>>>([]);
 
-const loaded = ref(false); 
+let loaded = ref(false); 
 let profile = ref<Record<string, string>>();
 
-async function updateProfile() {
-  profile = await getProfile(currentUsername.value); 
+onBeforeMount(async () => {
+  profile = await getProfile(username); 
+  // posts = await getAuthorPosts(currentUsername.value);  
   loaded.value = true; 
-  return profile
-}
-
-updateProfile(); 
+});
 
 </script>
 
 <template>
   <h1>Profile</h1>
   <section v-if="loaded">
-    <ProfileComponent :profile="profile" @refreshProfile="updateProfile"/>
-    <ProfileSearch />
+    <ProfileComponent v-if="loaded" :profile="profile" />
+    <!-- <PostListComponent2 v-if="loaded" :posts="posts" /> -->
   </section>
   <h1 v-else>Profile Not Found Yet</h1>
 </template>

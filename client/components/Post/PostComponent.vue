@@ -1,65 +1,39 @@
 <script setup lang="ts">
-// import { useUserStore } from "@/stores/user";
-// import { storeToRefs } from "pinia";
-// import { fetchy } from "../../utils/fetchy";
-import { ref } from "vue";
-import { useProfileStore } from "../../stores/profile";
-import { usePostStore } from "../../utils/post";
+import { defineProps, ref } from "vue";
+import { formatDate } from "../../utils/formatDate";
 
-const { getPostID, getPostTags } = usePostStore(); 
-const { getProfile } = useProfileStore(); 
-const props = defineProps(["query"]);
-const postid = props.query.query.q; 
+const props = defineProps(["post", "tags", "profile"]);
+const post = props.post;
+const tags = props.tags; 
+const profile = props.profile; 
+const postUpdated = ref(post.dateCreated !== post.dateUpdated); 
 
-let loaded = ref(false); 
-let author = ref(""); 
-let caption = ref(""); 
-let avatar = ref("");
-let image = ref(""); 
-let dateCreated = ref<Date>();
-let dateUpdated = ref<Date>();
-let tags = ref<Array<string>>([]); 
-
-async function begin() {
-  const post = await getPostID(postid); 
-  author.value = post.author; 
-  caption.value = post.caption; 
-  image.value = post.content; 
-  dateCreated.value = post.dateCreated;
-  dateUpdated.value = post.dateUpdated;
-  
-  const tagsresult = await getPostTags(postid); 
-  for(const t of tagsresult) tags.value.push(t.tagName); 
-  
-  avatar.value = (await getProfile(author.value)).avatar; 
-  loaded.value = true; //allows post to actually display 
-};
-
-await begin();
-
-
+console.log(props);
 </script>
 
 <template>
-  <main>
-  <h1>Post?</h1>
-  <!-- <section v-if="loaded" class ="post" :class="{active: loaded.valueOf}">
-    <img class="avatar" :src="avatar.valueOf" />
-    <span class="author">{{ author.valueOf }}</span>
-    
-    <article class="timestamp">
-      <p v-if="dateCreated !== dateUpdated">Edited on: {{ formatDate(dateUpdated? dateUpdated: new Date()) }}</p>
-      <p v-else>Created on: {{ formatDate(dateCreated? dateCreated: new Date() ) }}</p>
-    </article>
-
-    <p class="caption">{{ caption.valueOf }}</p>
-    <img class="postImage" :src="image.valueOf" />
-    <p></p>
-    <span v-for="tag in tags">
-        <span class="tag">{{ tag }}</span>
+  <section class ="postBlock">
+    <div style="display: inline-block;">
+      <img class="postAvatar" :src="profile.avatar" />
+    </div>
+    <div style="display: inline-block; margin-left: 1em">
+      <RouterLink :to="{ name: 'Profile', params: { user: profile.username} }"
+       class="routerLink">{{ profile.username }}</RouterLink>
+      <article class="timestamp">
+        <p v-if="postUpdated">Edited on: 
+        {{ formatDate(post.dateUpdated? post.dateUpdated: new Date()) }}</p>
+        <p v-else>Created on: {{ formatDate(post.dateCreated? post.dateCreated: new Date() ) }}</p>
+      </article>
+    </div>
+    <section class="postContent">
+      <p class="heading" style="margin: 1em 0;">{{ post.caption }}</p>
+        <img class="postImage" :src="post.content" style="margin-bottom: 1em;" />
+      <p></p>
+      <span v-for="tag in tags">
+        <span class="tag">{{ tag.tagName }}</span>
       </span>
-  </section> -->
-</main>
+    </section>
+  </section>
 
   <!-- <p class="author">{{ props.post.author }}</p>
   <p>{{ props.post.content }}</p>
@@ -74,20 +48,11 @@ await begin();
 </template>
 
 <style scoped>
-.post{
-  border-radius: 1em;
-  border: solid 2px #ddd;
-  padding: 7% 10%;
-  display: none;
-}
 p {
   margin: 0em;
 }
 .postImage{
   width: fit-content;
-}
-.active{
-  display: block;
 }
 .author {
   font-weight: bold;
@@ -118,5 +83,10 @@ menu {
 
 .base article:only-child {
   margin-left: auto;
+}
+.postAvatar{
+  width: 5em;
+  height: 5em;
+  border-radius: 0.5em;
 }
 </style>
