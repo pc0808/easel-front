@@ -108,3 +108,12 @@ form{
   display: flex;
 }
 
+.heading {
+  color: #ddd;
+  font-family: century-gothic;
+  letter-spacing: 1px;
+  font-size: 25px;
+  border: none;
+  padding: 0;
+  margin-bottom: 0.5em;
+}

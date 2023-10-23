@@ -14,6 +14,10 @@ let loaded = ref(false);
 let followText = ref("");
 let isSelf = ref((props.profile.username === currentUsername.value)? true: false); 
 
+// OF THE PROFILE, NOT OF THE CURR USER
+let following = ref<Array<Record<string, string>>>([]);
+let followers = ref<Array<Record<string, string>>>([]); 
+
 function switchEdit() {
   const form = document.getElementById("editForm");
   const button = document.getElementById("editButton");
@@ -31,25 +35,42 @@ function switchEdit() {
 }
 
 onBeforeMount(async () => {
-  if(isSelf.value) return;
-  const url = "/api/following/"+currentUsername.value+"&"+props.profile.username; 
-  const result = await fetchy(url, "PATCH", {} ); 
-  followText.value = (result.followUser2)? "Unfollow": "Follow"; 
+  let url;
+  if(!isSelf.value){
+     //checks whether follow each other 
+    url = "/api/following/"+currentUsername.value+"&"+props.profile.username; 
+    const result = await fetchy(url, "PATCH", {} ); 
+    followText.value = (result.followUser2)? "Unfollow": "Follow"; 
+  }
+
+  //get following+followed 
+  url = "/api/following/"+props.profile.username;
+  following.value = (await fetchy(url, "GET")).users; 
+  url = "api/followers/"+props.profile.username; 
+  followers.value = (await fetchy(url, "GET")).users;
+
+  console.log(followers.value); 
   loaded.value = true; 
 });
 
 async function followUnfollow() {
-  if(followText.value === "Follow"){
+  if(followText.value === "Follow"){ //follows the user 
     followText.value = "Loading..."; //wait for stuff 
 
     const url = "/api/follow/"+props.profile.username; 
-    await fetchy(url, "POST", {} ); 
+    const inst = await fetchy(url, "POST", {} ); 
+    followers.value.push(inst); 
+
+    console.log("after follow: ", followers.value); 
     followText.value = "Unfollow";
   } else{
     followText.value = "Loading..."; //wait for stuff 
 
     const url = "/api/unfollow/"+props.profile.username; 
     await fetchy(url, "POST", {} ); 
+    followers.value = (await fetchy("/api/followers/"+props.profile.username, "GET")).users; 
+
+    console.log("after unfollow: ", followers.value); 
     followText.value = "Follow"; 
   }
 }
@@ -62,7 +83,14 @@ async function followUnfollow() {
     <img :src=props.profile.avatar class="avatar" style="float:left">
     <span class ="profileInfo">
       <span class="username">{{ props.profile.username }}</span>
-      <p>{{ props.profile.biography }}</p>
+      <p>{{ props.profile.biography }}•</p>
+
+      <span v-if="loaded">
+        <a class="follow" v-if="loaded">{{following.length}} following </a>• 
+        <a class="follow" v-if="loaded">{{followers.length}} followers </a>
+      </span>
+      <span v-else>Loading...</span>
+
       <button v-if="isSelf"
        v-on:click="switchEdit()" id="editButton">Edit</button>
       <button v-if="loaded && !isSelf" style="margin-top: 1em;"
@@ -119,5 +147,9 @@ menu {
 }
 .base article:only-child {
   margin-left: auto;
+}
+
+.follow{
+  color: aqua;
 }
 </style>

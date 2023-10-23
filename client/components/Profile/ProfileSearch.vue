@@ -27,16 +27,14 @@ async function search(){
 </script>
 
 <template>
-  <main>
-    <form @submit.prevent="search" class="profileBlock">
-      <fieldset>
-        <legend class="heading">Search by Username</legend>
-        <input id="author" type="text" style="padding: 0.5em;" v-model="author" placeholder="Username" />
-        <button type="submit" style="padding: 0.5em;" class="pure-button" @onclick="search">Search</button>
-      </fieldset>
-    </form>
-    <ProfileComponent v-if="loaded" :profile="profile"/>
-  </main>
+  <form @submit.prevent="search" class="profileBlock">
+    <fieldset>
+      <legend class="heading">Search Profile By Username</legend>
+      <input id="author" type="text" style="padding: 0.5em;" v-model="author" placeholder="Username" />
+      <button type="submit" style="padding: 0.5em;" class="pure-button" @onclick="search">Search</button>
+    </fieldset>
+  </form>
+  <ProfileComponent v-if="loaded" :profile="profile"/>
 </template>
 
 <style scoped>
@@ -52,15 +50,6 @@ fieldset{
 }
 legend{
   text-transform: uppercase;
-}
-.heading {
-  color: #ddd;
-  font-family: century-gothic;
-  letter-spacing: 1px;
-  font-size: 25px;
-  border: none;
-  padding: 0;
-  margin-bottom: 0.5em;
 }
 button{
   color: #ddd;
