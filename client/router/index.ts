@@ -5,6 +5,7 @@ import { useUserStore } from "@/stores/user";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import PostListView from "../views/PostListView.vue";
 import PostView from "../views/PostView.vue";
 import ProfileView from "../views/ProfileView.vue";
 import SearchView from "../views/SearchView.vue";
@@ -55,6 +56,12 @@ const router = createRouter({
       path: "/post/id=:id",
       name: "Post",
       component: PostView,
+      // params: (postid:string) => {id: postid},
+    },
+    {
+      path: "/postlist/user=:user?&tagname=:tagname?",
+      name: "PostList",
+      component: PostListView,
       // params: (postid:string) => {id: postid},
     },
     {

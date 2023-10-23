@@ -95,7 +95,6 @@ class Routes {
 
   @Router.patch("/profiles")
   async updateProfile(session: WebSessionDoc, update: Partial<ProfileDoc>) {
-    console.log(update, update.avatar, update.biography);
     const user = WebSession.getUser(session);
     const profile = (await Profile.getProfileByUser(user))._id;
     return await Profile.update(profile, update); //assures new usrn is okay 
@@ -104,19 +103,20 @@ class Routes {
   ////////////////////////////////
   // POSTS CONCEPT DOWN BELOW ////
   ////////////////////////////////
-  @Router.get("/posts")
-  async getPosts(author?: string) {
+  @Router.get("/posts/:author")
+  async getPosts(author: string) {
+    console.log("in server: ", author); 
     let posts;
-    if (author) {
-      const id = (await User.getUserByUsername(author))._id;
-      posts = await Post.getByAuthor(id);
-    } else {
-      posts = await Post.getContents({});
-    }
+    console.log("in server: ", author); 
+    
+    const id = (await User.getUserByUsername(author))._id;
+    console.log(id); 
+    posts = await Post.getByAuthor(id);
+    
     return Responses.posts(posts);
   }
 
-  @Router.get("/posts/:_id")
+  @Router.get("/posts/id/:_id")
   async getPostByID(_id: ObjectId) {
     const post = await Post.getContentByID(_id);
     return { msg: post.msg, post: await Responses.post(post.content) };
@@ -279,8 +279,6 @@ class Routes {
     const user1id = (await User.getUserByUsername(user1))._id;
     const user2id = (await User.getUserByUsername(user2))._id;
     const following = await Following.getFollowing(user1id);
-
-    console.log(user1id, user2id, following);
 
     if (new Set(await Responses.following(following, false)).has(user2id))
       return { msg: "read successful", followUser2: true };

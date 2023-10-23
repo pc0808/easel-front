@@ -1,22 +1,28 @@
 <script setup lang="ts">
-// import { usePostStore } from "@/stores/post";
+import { usePostStore } from "@/stores/post";
 import { onBeforeMount, ref } from "vue";
-import router from "../router";
-// import PostListComponent2 from "../components/Post/PostListComponent2.vue";
+import PostListComponent from "../components/Post/PostListComponent.vue";
 import ProfileComponent from "../components/Profile/ProfileComponent.vue";
+import router from "../router";
 import { useProfileStore } from "../stores/profile";
 
 const {getProfile} = useProfileStore(); 
+const { getAuthorPosts} = usePostStore(); 
 const username = router.currentRoute._value.params.user;
-// const { getAuthorPosts} = usePostStore(); 
-// let posts = ref<Array<Record<string, string>>>([]);
+
+let posts = ref<Array<Record<string, string>>>([]);
 
 let loaded = ref(false); 
 let profile = ref<Record<string, string>>();
 
 onBeforeMount(async () => {
   profile = await getProfile(username); 
-  // posts = await getAuthorPosts(currentUsername.value);  
+  console.log(username, username.value); 
+  posts = await getAuthorPosts(username);  
+  console.log(posts);
+  for(const post in posts) {
+    posts[post].profile = profile; 
+  }
   loaded.value = true; 
 });
 
@@ -26,7 +32,7 @@ onBeforeMount(async () => {
   <h1>Profile</h1>
   <section v-if="loaded">
     <ProfileComponent v-if="loaded" :profile="profile" />
-    <!-- <PostListComponent2 v-if="loaded" :posts="posts" /> -->
+    <PostListComponent v-if="loaded" :posts="posts" />
   </section>
   <h1 v-else>Profile Not Found Yet</h1>
 </template>

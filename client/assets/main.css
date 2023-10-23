@@ -139,3 +139,42 @@ form{
   background-color: aqua;
   /* cursor: URL("../../assets/images/xcursor.svg"), auto; */
 }
+.postColumns{
+  margin: 5% 20%;
+  column-count: 3;
+  column-gap: 2em;
+  flex-wrap: nowrap;
+}
+.listPost{
+  border: solid 2px #ddd;
+  padding: 1em;
+  border-radius: 0.5em;
+  margin-bottom: 2em;
+  display: flex;
+  flex-wrap: wrap;
+}
+.imageList{
+  width: 100%;
+  border-radius: 0.5em;
+  margin-bottom: 0.5em;
+}
+.listAvatar{
+  width: 4em;
+  height: 4em;
+  border-radius: 0.5em;
+  display: inline-block;
+}
+.listAuthor{
+  font-family: century-gothic;
+  color: #ddd;
+  text-decoration: none;
+  font-size: 18px;
+}
+.listAuthor:hover{
+  color: aqua;
+}
+.postListText{
+  vertical-align: middle;
+  margin-top: 0.8em;
+  margin-left: 1em;
+}

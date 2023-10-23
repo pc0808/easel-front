@@ -42,8 +42,9 @@ export default class ContentConcept<T>{
   }
 
   async getContentByID(_id: ObjectId) {
+    console.log("Why is this being called");
     const content = await this.contents.readOne({ _id });
-    if (!content) throw new NotFoundError("Content w this ID does not exist");
+    if (!content) throw new NotFoundError("Content with this ID does not exist");
     else return { msg: "read successful", content: content }
   }
 

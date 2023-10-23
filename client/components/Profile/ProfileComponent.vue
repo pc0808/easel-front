@@ -45,7 +45,6 @@ onBeforeMount(async () => {
     followText.value = (result.followUser2)? "Unfollow": "Follow"; 
   }
 
-  console.log("trying to get loaded", username);
   //get following+followed 
   url = "/api/following/"+username;
   following.value = (await fetchy(url, "GET")).users; 

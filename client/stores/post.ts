@@ -6,13 +6,15 @@ import { fetchy } from "@/utils/fetchy";
 export const usePostStore = defineStore(
     "post", 
     () => {
-        const getAuthorPosts = async (author?: string) => {
-            let url = "/api/posts/" ; 
-            if(author) url+=author; 
+        const getAuthorPosts = async (author: string) => {
+            console.log("in post store", author); 
+            const url = "/api/posts/"+author ; 
+            
+            console.log("in post store", url); 
             return await fetchy(url, "GET", { });
         }; 
         const getPostID = async(_id: string) => {
-            const result = await fetchy("/api/posts/"+_id, "GET", { });
+            const result = await fetchy("/api/posts/id/"+_id, "GET", { });
             return result.post; 
         };
         const getPostTags = async(_id: string) => {
