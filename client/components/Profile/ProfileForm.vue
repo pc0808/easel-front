@@ -35,25 +35,23 @@ const currBiography = props.currBiography;
 </script>
 
 <template>
-  <div class="profileBlock" style="margin-bottom: 5%;">
-    <form class="profileBlock" @submit.prevent="update" >
-      <fieldset>
-        <legend class="heading">Update Profile</legend>
-        <div class="pure-control-group">
-          <label for="aligned-avatar">Avatar: </label>
-          <input type="file" id="aligned-avatar" accept="image/png, image/jpeg"
-          :onchange=setAvatar />
-        </div>
-        <div class="pure-control-group" style="margin: 0.5em 0;">
-          <label for="aligned-bio">Biography: </label>
-          <input type="text" v-model.trim="biography" id="aligned-bio" placeholder="Type here" />
-        </div>
-        <div class="pure-controls">
-          <button type="submit" class="profileButton">Submit</button>
-        </div>
-      </fieldset>
+  <main class="profileBlock">
+    <form @submit.prevent="update" >
+      <legend class="heading">Update Profile</legend>
+      <div class="pure-control-group">
+        <label for="aligned-avatar">Avatar: </label>
+        <input type="file" id="aligned-avatar" accept="image/png, image/jpeg"
+        :onchange=setAvatar />
+      </div>
+      <div class="pure-control-group" style="margin: 0.5em 0;">
+        <label for="aligned-bio">Biography: </label>
+        <input type="text" v-model.trim="biography" id="aligned-bio" placeholder="Type here" />
+      </div>
+      <div class="pure-controls">
+        <button type="submit" class="submitButton">Submit</button>
+      </div>
     </form>
-  </div>
+  </main>
 </template>
 
 <style scoped>
@@ -62,12 +60,8 @@ const currBiography = props.currBiography;
 }
 form{
   padding: 0;
-  margin-right: -10em;
-}
-fieldset{
-  margin: -2em -10em 0;
   border: 0;
-  padding: 0;
+  margin: 0 -20% 0 0;
 }
 view{
   display: none;
@@ -80,16 +74,8 @@ img{
 label{
   size: 25px;
 }
-form{
-  border: 0;
-  padding: 0;
-}
 #aligned-bio{
   width: 100%;
   margin-right: -50%;
-}
-.profileButton{
-  padding: 0.5em;
-  margin-top: 0.5em;
 }
 </style>

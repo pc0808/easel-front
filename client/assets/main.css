@@ -111,6 +111,7 @@ form{
 }
 .postBlock{
   border-radius: 1em;
+  background-color: transparent;
   border: solid 2px #ddd;
   margin: 5% 20%;
   padding: 3% 5%;
@@ -184,4 +185,11 @@ form{
   font-family: century-gothic;
   margin: 5% 20%;
   font-size: 25px;
+}
+.submitButton{
+  padding: 0.5em;
+  margin-top: 0.5em;
+  font-family: century-gothic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }

@@ -228,6 +228,7 @@ class Routes {
 
   @Router.post("/tags/posts/:tagName&:_post")
   async addTagToPost(session: WebSessionDoc, _post: ObjectId, tagName: string) {
+    console.log("server side", _post, tagName); 
     const user = WebSession.getUser(session);
     await Post.isAuthor(user, _post);
     await PostTags.create(tagName, user, _post);

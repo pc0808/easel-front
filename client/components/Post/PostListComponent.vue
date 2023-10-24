@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import { smallDate } from '../../utils/formatDate';
-// import { sortDateUpdated } from '../../utils/formatPosts';
+import { sortDateUpdated } from '../../utils/formatPosts';
 
 const props = defineProps(["posts"]); // EACH POST MUST ALSO HAVE INFO FOR AUTHOR'S PROFILE 
-// const posts = sortDateUpdated(props.posts); //sorts by latest 
-const posts = props.posts; 
+const posts = sortDateUpdated(props.posts); //sorts by latest 
+// const posts = props.posts; 
 </script>
 <template>
     <section class="postColumns">

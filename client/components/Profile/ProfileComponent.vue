@@ -145,6 +145,9 @@ menu {
 #editButton{
   padding: 5px 8px;
   margin-top: 1em;
+  font-family: century-gothic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 .base article:only-child {
   margin-left: auto;
