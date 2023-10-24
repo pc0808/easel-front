@@ -17,11 +17,20 @@ function setImage(event: any){
 }
 function addTag(event: any){
   if(event.key !== "Enter") return; //only want this func to go thru on enter presses 
+  
   const tagInput = document.getElementById("aligned-tags");
+  if(tagInput && tagInput?.value.indexOf(' ') >= 0) {
+    alert("Cannot have spaces in tags"); 
+    return; 
+  }
+  
   const currTag = (tagInput?.value)? tagInput?.value:  ""; 
   if(tagInput && tagInput?.value){ 
     //make sure tagInput isn't blank and that not already inputted 
-    if(new Set(tags.value).has(currTag) ) return; 
+    if(new Set(tags.value).has(currTag) ) {
+      alert("Already inputted"); 
+      return; 
+    }
     tags.value.push(currTag);
     tagInput.value = ""; //
   }

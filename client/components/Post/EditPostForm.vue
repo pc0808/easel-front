@@ -18,10 +18,15 @@ const deleteTag = (tag:string) => {
 }
 
 const addTag = (event:any) => {
-  console.log("what the fuckkkkk");
   if(event.key !== "Enter") return; //only want this func to go thru on enter presses 
-  console.log("working?");
-  if(new Set(updatingTags.value).has(currTag.value) ) return; //already part of tags 
+  if(new Set(updatingTags.value).has(currTag.value) ) {
+    alert("Already inputted"); 
+    return; //already part of tags
+  }
+  if( currTag.value.indexOf(' ') >= 0 ){ 
+    alert("Cannot have spaces in tags"); 
+    return; 
+  }
   updatingTags.value.push(currTag.value);
   currTag.value = ""; //
 }
