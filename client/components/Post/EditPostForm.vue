@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import router from '../../router';
 import { fetchy } from '../../utils/fetchy';
 
 const props = defineProps(["post", "tags"]);
@@ -42,14 +43,26 @@ const updatePost = async () => {
       await fetchy(`/api/tags/posts/${tag}&${post._id}`, "POST"); 
     for(const tag of toDelete)
       await fetchy(`/api/tags/posts/${tag}&${post._id}`, "DELETE"); 
-  }catch{
-
-  }
+  }catch{ }
 
   loaded.value = true; 
-  window.location.reload(); 
+  reloadPage(); 
 };
 
+const deletePost = async() => {
+  if (confirm("Are you sure you want to delete?")) {
+    loaded.value = false; 
+    try{ //deletes post 
+      await fetchy(`/api/posts/${post._id}`, "DELETE"); 
+      router.push({name: "Home"}); 
+    }catch{ }
+    loaded.value = true;
+  }
+}
+
+const reloadPage = async() => {
+  window.location.reload(); 
+}
 </script>
 
 <template>
@@ -68,17 +81,11 @@ const updatePost = async () => {
        :onkeypress="addTag" placeholder ="Add tag here"/>
     </div>
     <menu>
-      <button type="submit" class="submitButton" :onclick="updatePost" >Save</button>
-      <button class="submitButton" style="color: #555;">Cancel</button>
+      <button type="submit" class="submitButton" :onclick="updatePost" style="color: #555;">Save</button>
+      <button type="submit" class="submitButton" :onclick="deletePost" style="color: #555;">Delete</button>
+      <button class="submitButton" :onclick="reloadPage">Cancel</button>
     </menu>
 
-    <!-- <p class="author">{{ props.post.author }}</p>
-    <textarea id="content" v-model="content" placeholder="Create a post!" required> </textarea>
-    <div class="base">
-      
-      <p v-if="props.post.dateCreated !== props.post.dateUpdated" class="timestamp">Edited on: {{ formatDate(props.post.dateUpdated) }}</p>
-      <p v-else class="timestamp">Created on: {{ formatDate(props.post.dateCreated) }}</p>
-    </div> -->
   </div>
   <span class="heading" style="margin: 5% 20%" v-else>Loading...</span>
 </template>
