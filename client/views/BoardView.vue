@@ -9,15 +9,15 @@ const { getBoardID, getBoardTags } = useBoardStore();
 const { getProfile } = useProfileStore();
 const boardid = router.currentRoute.value.params.id; //sjould 
 
-let board = ref<Record<string, string>>();
+let board = ref<Record<string, string>>({author: "aespa"});
 let profile = ref<Record<string, string>>();
 let tags = ref<Array<Record<string, string>>>([]); 
 let loaded = ref(false);
 
 onBeforeMount(async () => {
-    board = await getBoardID(boardid); 
-    tags = await getBoardTags(boardid); 
-    profile = await getProfile(board.author); 
+    board.value = await getBoardID(boardid); 
+    tags.value = await getBoardTags(boardid); 
+    profile.value = await getProfile(board.value.author); 
     loaded.value = true; 
 });
 

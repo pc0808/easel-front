@@ -6,15 +6,18 @@ import { fetchy } from "@/utils/fetchy";
 export const useBoardStore = defineStore(
     "board", 
     () => {
-        const getAuthorBoards = async (author: string) => {
+        const getAuthorBoards = async (author: string | string[]) => {
+            if(author.constructor === Array) return;
             const url = "/api/boards/"+author ; 
             return await fetchy(url, "GET", { });
         }; 
-        const getBoardID = async(_id: string) => {
+        const getBoardID = async(_id: string | string[]) => {
+            if(_id.constructor === Array) return;
             const result = await fetchy("/api/boards/id/"+_id, "GET", { });
             return result.board; 
         };
-        const getBoardTags = async(_id: string) => {
+        const getBoardTags = async(_id: string | string[]) => {
+            if(_id.constructor === Array) return;
             const result = await fetchy("/api/tags/boards", "PATCH", { 
                 body: {filter: {"content": _id} }
             });

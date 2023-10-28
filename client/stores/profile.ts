@@ -9,7 +9,8 @@ export const useProfileStore = defineStore(
     const currAvatar = ref("");
     const currBiography = ref("");
 
-    const getProfile = async (username: string) => {
+    const getProfile = async (username: string | string[]) => {
+        if(username.constructor === Array) return;
         const results = await fetchy("/api/profiles/"+username, "GET", { });
         results.username = username; 
         return results;
