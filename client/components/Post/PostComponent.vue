@@ -105,40 +105,7 @@ p {
 .postImage{
   width: 100%;
 }
-.author {
-  font-weight: bold;
-  font-size: 1.2em;
-}
 
-menu {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
-  gap: 1em;
-  padding: 0;
-  margin: 0;
-}
-
-.timestamp {
-  display: flex;
-  font-size: 0.9em;
-  font-style: italic;
-}
-
-.base {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.base article:only-child {
-  margin-left: auto;
-}
-.postAvatar{
-  width: 5em;
-  height: 5em;
-  border-radius: 0.5em;
-}
 .editButton{
   padding: 5px 8px;
   margin-top: 0.5em;

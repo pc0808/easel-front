@@ -173,6 +173,13 @@ class Routes {
     return { msg: created.msg, board: await Responses.board(created.content) };
   }
 
+  @Router.patch("/boards/:_id")
+  async updateBoard(session: WebSessionDoc, _id: ObjectId, update: Partial<ContentDoc<ObjectId[]>>) {
+    const user = WebSession.getUser(session);
+    await Board.isAuthor(user, _id);
+    return await Board.update(_id, update);
+  }
+
   @Router.get("/boards/post/:_board&:_post")
   async postInBoard(_board: ObjectId, _post: ObjectId) {
     console.log("here");
@@ -184,16 +191,17 @@ class Routes {
     }
   }
 
-  @Router.patch("/boards/:_board&:_post")
+  @Router.put("/boards/:_board&:_post")
   async addPostToBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);
+    //console.log("in server", user);
     await Board.isAuthor(user, _board);
     await Post.getContentByID(_post); //will check that this post actually exists 
 
     return await Board.addPostToBoard(_board, _post);
   }
 
-  @Router.delete("/boards/:_id")
+  @Router.delete("/boards/delete/:_id")
   async deleteBoard(session: WebSessionDoc, _id: ObjectId) {
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _id);
@@ -203,7 +211,7 @@ class Routes {
     return Board.delete(_id);
   }
 
-  @Router.put("/boards/:_board&:_post")
+  @Router.delete("/boards/:_board&:_post")
   async deletePostFromBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _board);

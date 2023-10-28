@@ -26,7 +26,7 @@ export const useBoardStore = defineStore(
         };
         const addPostToBoard = async(boardid:string, postid:string) => {
             const url = "/api/boards/"+boardid+"&"+postid;
-            return await fetchy(url, "PATCH"); 
+            return await fetchy(url, "PUT"); 
         };
         const removePostFromBoard = async(boardid:string, postid:string) => {
             const url = "/api/boards/"+boardid+"&"+postid

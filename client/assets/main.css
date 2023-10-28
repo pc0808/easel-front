@@ -167,6 +167,11 @@ form{
   border-radius: 0.5em;
   display: inline-block;
 }
+.postAvatar{
+  width: 5em;
+  height: 5em;
+  border-radius: 0.5em;
+}
 .listAuthor{
   font-family: century-gothic;
   color: #ddd;
@@ -195,4 +200,19 @@ form{
 }
 section .listPost{
   break-inside: avoid-column;
+}
+.boardBlock{
+  margin: 5% 20%;
+}
+.boardCaption{
+  border-bottom: solid 2px #ddd;
+  text-transform: uppercase;
+  font-family: century-gothic;
+  letter-spacing: 1px;
+  padding-bottom: 0.5em;
+}
+.timestamp {
+  display: flex;
+  font-size: 0.9em;
+  font-style: italic;
 }
