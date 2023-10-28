@@ -47,10 +47,11 @@ const updateBoard = async () => {
       await fetchy(`/api/tags/boards/${tag}&${board._id}`, "POST"); 
     for(const tag of toDelete)
       await fetchy(`/api/tags/boards/${tag}&${board._id}`, "DELETE"); 
+
+    reloadPage(); 
   }catch{ }
 
   loaded.value = true;
-  reloadPage(); 
 };
 
 const deleteBoard = async() => {
