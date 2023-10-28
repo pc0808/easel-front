@@ -18,11 +18,9 @@ export default class BoardConcept extends ContentConcept<ObjectId[]>{
     async update(_id: ObjectId, update: Partial<ContentDoc<ObjectId[]>>) {
         if(update.caption){
             await this.boardNameUnique(update.caption); 
-            await this.contents.updateOne({ _id }, update);
-            return { msg: "Content successfully updated!" };
-        }else{
-            throw new NotAllowedError("Only allowed to update caption");
         }
+        await this.contents.updateOne({ _id }, update);
+        return { msg: "Content successfully updated!" };
     }
     async addPostToBoard(_board: ObjectId, _post: ObjectId) {
         await this.postNotInBoard(_board, _post);
