@@ -9,11 +9,13 @@ export interface ProfileDoc extends BaseDoc {
     biography: string;
 }
 
+const DEFAULT_AVATAR = "https://firebasestorage.googleapis.com/v0/b/easel-e38a5.appspot.com/o/avatars%2FdefaultAvatar.png?alt=media&token=fc9e3ebe-17de-49c6-a00f-9b53ea2ccbcf&_gl=1*xho31z*_ga*MTE1NDA2NjQ0MS4xNjk3NTY2MTI2*_ga_CW55HF8NVT*MTY5NzkxNzgxOC40LjEuMTY5NzkyNDk1MC42MC4wLjA."; 
+
 export default class ProfileConcept {
     public readonly profiles = new DocCollection<ProfileDoc>("Profiles");
 
     async create(user: ObjectId) {
-        const _id = await this.profiles.createOne({ user: user, avatar: "", biography: "" });
+        const _id = await this.profiles.createOne({ user: user, avatar: DEFAULT_AVATAR, biography: "" });
         return { msg: "Content successfully created!", profile: await this.profiles.readOne({ user }) };
     }
     // will filter either by *profile* objectID 

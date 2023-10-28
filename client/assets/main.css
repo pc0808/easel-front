@@ -27,14 +27,11 @@ button{
   margin: 0 -10%;
   text-align: center;
 }
-
-a.button {
-  color: #212529;
-  background-color: #f1f3f5;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25em;
-  padding: 0.375em 0.75em;
-  text-decoration: none;
+button:hover{
+  color: #191919;
+  background-color: aqua;
+  border-color: aqua;
+  cursor: pointer;
 }
 
 .column {
@@ -57,4 +54,166 @@ body{
 
 legend{
   color: #fff;
+}
+
+.avatar{
+  width: 7em;
+  height: 7em;
+  border-radius: 0.5em;
+}
+input[type=file]{
+  background-color: none;
+  color: #ddd;
+  border: solid 1px #ddd;
+  border-radius: 1em;
+}
+input[type=text]{
+  background-color: transparent;
+  border: solid 1px #ddd;
+  border-radius: 0.5em;
+  color: #bbb;
+}
+button[type=submit]{
+  background-color: transparent;
+  border: solid 1px #ddd;
+  border-radius: 0.5em;
+  font-family: century-gothic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+button[type=submit]:hover{
+  background-color: aqua;
+  color: #191919;
+  border: none;
+  cursor: grab;
+}
+form{
+  background-color: transparent;
+  border: solid 1px #ddd;
+}
+.profileBlock{
+  margin: 4% 20% 0;
+  gap: 0.5em;
+  padding: 2em 3em;
+  align-items: center;
+  border-radius: 1em;
+  border: solid 2px #ddd;
+  display: flex;
+}
+
+.heading {
+  color: #ddd;
+  font-family: century-gothic;
+  letter-spacing: 1px;
+  font-size: 25px;
+  border: none;
+  padding: 0;
+  margin-bottom: 0.5em;
+}
+.postBlock{
+  border-radius: 1em;
+  background-color: transparent;
+  border: solid 2px #ddd;
+  margin: 5% 20%;
+  padding: 3% 5%;
+}
+.caption{
+  margin: 5em 0;
+  font-family: century-gothic;
+  font-size: 25px;
+}
+.routerLink{
+  text-decoration: none;
+  font-family: century-gothic;
+  font-size: 25px;
+  color: #ddd;
+}
+.routerLink:hover{
+  color: aqua;
+}
+.tag{
+  background-color: #bbb;
+  color: #555;
+  padding: 2px 5px;
+  border-radius: 0.5em;
+  margin: 0 5px;
+  text-decoration: none;
+}
+.tag:hover{
+  background-color: aqua;
+  /* cursor: URL("../../assets/images/xcursor.svg"), auto; */
+}
+.postColumns{
+  margin: 5% 20%;
+  column-count: 3;
+  column-gap: 2em;
+  flex-wrap: nowrap;
+}
+.listPost{
+  border: solid 2px #ddd;
+  padding: 1em;
+  border-radius: 0.5em;
+  margin-bottom: 2em;
+  display: flex;
+  flex-wrap: wrap;
+}
+.imageList{
+  width: 100%;
+  border-radius: 0.5em;
+  margin-bottom: 0.5em;
+}
+.listAvatar{
+  width: 4em;
+  height: 4em;
+  border-radius: 0.5em;
+  display: inline-block;
+}
+.postAvatar{
+  width: 5em;
+  height: 5em;
+  border-radius: 0.5em;
+}
+.listAuthor{
+  font-family: century-gothic;
+  color: #ddd;
+  text-decoration: none;
+  font-size: 18px;
+}
+.listAuthor:hover{
+  color: aqua;
+}
+.postListText{
+  vertical-align: middle;
+  margin-top: 0.8em;
+  margin-left: 1em;
+}
+.loadingText{
+  font-family: century-gothic;
+  margin: 5% 20%;
+  font-size: 25px;
+}
+.submitButton{
+  padding: 0.5em;
+  margin-top: 0.5em;
+  font-family: century-gothic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+section .listPost{
+  break-inside: avoid-column;
+}
+.boardBlock{
+  margin: 5% 20%;
+}
+.boardCaption{
+  border-bottom: solid 2px #ddd;
+  text-transform: uppercase;
+  font-family: century-gothic;
+  letter-spacing: 1px;
+  padding-bottom: 0.5em;
+}
+.timestamp {
+  display: flex;
+  font-size: 0.9em;
+  font-style: italic;
 }

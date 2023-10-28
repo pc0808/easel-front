@@ -3,11 +3,11 @@ import { ref } from 'vue';
 import router from '../../router';
 import { fetchy } from '../../utils/fetchy';
 
-const props = defineProps(["post", "tags"]);
-const post = props.post;
+const props = defineProps(["board", "tags"]);
+const board = props.board;
 const tags = props.tags; 
 
-let caption = ref(post.caption);
+let caption = ref(board.caption);
 let updatingTags = ref<Array<string>>([]); 
 updatingTags.value = tags.map((tag:any) => tag.tagName); //what we're removing and deleting from 
 let currTag = ref("");
@@ -31,12 +31,11 @@ const addTag = (event:any) => {
   currTag.value = ""; //
 }
 
-const updatePost = async () => {
+const updateBoard = async () => {
   loaded.value = false; 
-  console.log("what the fuck"); 
 
   try{
-    await fetchy(`/api/posts/${post._id}`, "PATCH", {body: {update: {caption: caption.value}}} ); 
+    await fetchy(`/api/boards/${board._id}`, "PATCH", {body: {update: {caption: caption.value}}} ); 
 
     const oldTags = tags.map((tag:any) => tag.tagName);
     const oldSet = new Set(oldTags);
@@ -45,20 +44,21 @@ const updatePost = async () => {
     const toDelete = oldTags.filter((tag:string) => !newSet.has(tag)); 
     
     for(const tag of toAdd)
-      await fetchy(`/api/tags/posts/${tag}&${post._id}`, "POST"); 
+      await fetchy(`/api/tags/boards/${tag}&${board._id}`, "POST"); 
     for(const tag of toDelete)
-      await fetchy(`/api/tags/posts/${tag}&${post._id}`, "DELETE"); 
+      await fetchy(`/api/tags/boards/${tag}&${board._id}`, "DELETE"); 
+
+    reloadPage(); 
   }catch{ }
 
-  loaded.value = true; 
-  reloadPage(); 
+  loaded.value = true;
 };
 
-const deletePost = async() => {
+const deleteBoard = async() => {
   if (confirm("Are you sure you want to delete?")) {
     loaded.value = false; 
-    try{ //deletes post 
-      await fetchy(`/api/posts/${post._id}`, "DELETE"); 
+    try{ //deletes board 
+      await fetchy(`/api/boards/delete/${board._id}`, "DELETE"); 
       router.push({name: "Home"}); 
     }catch{ }
     loaded.value = true;
@@ -72,7 +72,7 @@ const reloadPage = async() => {
 
 <template>
   <div v-if="loaded" class="postBlock" >
-    <legend class="heading" style="display: block;">Update Post</legend><br>
+    <legend class="heading" style="display: block;">Update Board</legend><br>
     <div style="display: block;">
       <label for="aligned-bio">Caption: </label>
       <input type="text" v-model.trim="caption" id="aligned-bio" :placeholder="caption" class="textarea" />
@@ -86,8 +86,8 @@ const reloadPage = async() => {
        :onkeypress="addTag" placeholder ="Add tag here"/>
     </div>
     <menu>
-      <button type="submit" class="submitButton" :onclick="updatePost" style="color: #555;">Save</button>
-      <button type="submit" class="submitButton" :onclick="deletePost" style="color: #555;">Delete</button>
+      <button type="submit" class="submitButton" :onclick="updateBoard" style="color: #555;">Save</button>
+      <button type="submit" class="submitButton" :onclick="deleteBoard" style="color: #555;">Delete</button>
       <button class="submitButton" :onclick="reloadPage">Cancel</button>
     </menu>
 
