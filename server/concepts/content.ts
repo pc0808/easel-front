@@ -31,6 +31,7 @@ export default class ContentConcept<T>{
   }
 
   async getContents(query: Filter<ContentDoc<T>>) {
+    console.log(query); 
     const contents = await this.contents.readMany(query, {
       sort: { dateUpdated: -1 },
     });

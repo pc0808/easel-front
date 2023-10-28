@@ -8,7 +8,7 @@ import { uploadImageGetURL } from "../../utils/firebase";
 const tags = ref<Array<string>>([]); 
 let loaded = ref(true); 
 let tagInput = ref(""); 
-let caption = "";
+let caption = ref("");
 
 function addTag(event: any){
     if(event.key !== "Enter" || tagInput.value === "") return; 
@@ -44,10 +44,9 @@ async function createBoard () {
   loaded.value = false;
   try {
     const response = await fetchy("/api/boards", "POST", {
-      body: { "caption": caption },
+      body: { "caption": caption.value },
     });
     const boardid = response.board._id; 
-   
     let result;
     for(const tag of tags.value){
       result = await updateBoardWithTag(boardid, tag); 

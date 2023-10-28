@@ -9,22 +9,22 @@ import { useProfileStore } from "../stores/profile";
 const {getProfile} = useProfileStore(); 
 const { getAuthorPosts} = usePostStore(); 
 const { getAuthorBoards } = useBoardStore();
-const username = router.currentRoute._value.params.user;
+const username = router.currentRoute.value.params.user;
 
-let posts = ref<Array<Record<string, string>>>([]);
+let posts = ref<Array<Record<string, any>>>([]);
 let boards = ref<Array<Record<string, any>>>([]); 
 let loaded = ref(false); 
 let profile = ref<Record<string, string>>();
 
 onBeforeMount(async () => {
   profile = await getProfile(username); 
-  posts = await getAuthorPosts(username);  
-  boards = await getAuthorBoards(username); 
-  for(const post in posts) {
-    posts[post].profile = profile; 
+  posts.value = await getAuthorPosts(username);  
+  boards.value = await getAuthorBoards(username); 
+  for(const post of posts.value) {
+    post.profile = profile; 
   }
-  for(const board in boards) {
-    boards[board].profile = profile; 
+  for(const board of boards.value) {
+    board.profile = profile; 
   }
   loaded.value = true; 
 });

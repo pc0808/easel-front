@@ -3,9 +3,9 @@ import { defineProps } from 'vue';
 import { smallDate } from '../../utils/formatDate';
 import { sortDateUpdated } from '../../utils/formatPosts';
 
-console.log("hello??"); 
 const props = defineProps(["boards"]); // EACH BOARD MUST ALSO HAVE INFO FOR AUTHOR'S PROFILE 
 const boards = sortDateUpdated(props.boards); //sorts by latest 
+console.log(boards); 
 
 </script>
 <template>
@@ -14,7 +14,6 @@ const boards = sortDateUpdated(props.boards); //sorts by latest
             <RouterLink :to="{name: 'Board', params: {id: board._id}}" class="routerLink">
                 {{ board.caption }}
             </RouterLink>
-            
             <img :src="board.profile.avatar" class="listAvatar" style="margin-top:1em"/>
             <section class="postListText">
                 <RouterLink :to="{name: 'Profile', params: {user: board.author}}" 

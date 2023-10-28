@@ -11,8 +11,8 @@ const {getPostsUnderTag, getPostsUnderTagUser } = useTagStore();
 const {getUserByUsername} = useUserStore(); 
 const {getAuthorPosts, getPostID} = usePostStore();
 const {getProfile} = useProfileStore();
-const username = router.currentRoute._value.params.user;
-const tagName = router.currentRoute._value.params.tagname;
+const username = router.currentRoute.value.params.user;
+const tagName = router.currentRoute.value.params.tagname;
 let loaded = ref(false); 
 let posts = ref<Array<Record<string, string>>>([]); 
 

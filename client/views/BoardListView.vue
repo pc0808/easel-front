@@ -12,8 +12,8 @@ const {getUserByUsername} = useUserStore();
 const {getAuthorBoards, getBoardID} = useBoardStore();
 const {getProfile} = useProfileStore();
 
-const username = router.currentRoute._value.params.user;
-const tagName = router.currentRoute._value.params.tagname;
+const username = router.currentRoute.value.params.user;
+const tagName = router.currentRoute.value.params.tagname;
 let loaded = ref(false); 
 let boards = ref<Array<Record<string, string>>>([]); 
 console.log("username: ", username, "tagName: ", tagName); 

@@ -7,9 +7,8 @@ import { useProfileStore } from "../stores/profile";
 
 const { getBoardID, getBoardTags } = useBoardStore();
 const { getProfile } = useProfileStore();
-const boardid = router.currentRoute._rawValue.params.id;
+const boardid = router.currentRoute.value.params.id; //sjould 
 
-console.log(boardid);
 let board = ref<Record<string, string>>();
 let profile = ref<Record<string, string>>();
 let tags = ref<Array<Record<string, string>>>([]); 

@@ -7,7 +7,7 @@ import { useProfileStore } from "../stores/profile";
 
 const { getPostID, getPostTags } = usePostStore();
 const { getProfile } = useProfileStore();
-const postid = router.currentRoute._rawValue.params.id;
+const postid = router.currentRoute.value.params.id;
 let post = ref<Record<string, string>>();
 let profile = ref<Record<string, string>>();
 let tags = ref<Array<Record<string, string>>>([]); 

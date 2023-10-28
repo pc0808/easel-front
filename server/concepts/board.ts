@@ -6,7 +6,7 @@ import { BadValuesError, NotAllowedError } from "./errors";
 export default class BoardConcept extends ContentConcept<ObjectId[]>{
     //SPECIFIC to board: 
     async create(author: ObjectId, caption: string, content: ObjectId[], options?: ContentOptions) {
-        this.boardNameUnique(caption);
+        await this.boardNameUnique(caption);
         const _id = await this.contents.createOne({
             author, caption, content, options
         });
@@ -56,7 +56,7 @@ export default class BoardConcept extends ContentConcept<ObjectId[]>{
         }
     }
     async boardNameUnique(caption: string){
-        if(await this.getContents({caption})){
+        if((await this.getContents({caption})).length > 0){
             throw new NotAllowedError("Board with given name already exists"); 
         }
     }
