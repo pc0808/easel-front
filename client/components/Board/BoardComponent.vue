@@ -3,22 +3,22 @@ import { storeToRefs } from "pinia";
 import { defineProps, ref } from "vue";
 import { useUserStore } from '../../stores/user';
 import { formatDate } from "../../utils/formatDate";
-import EditPostForm from "./EditPostForm.vue";
+// import EditPostForm from "./EditPostForm.vue";
 
-const props = defineProps(["post", "tags", "profile"]);
-const post = props.post;
+const props = defineProps(["board", "tags", "profile"]);
+const board = props.board;
 const tags = props.tags; 
 const profile = props.profile; 
 const {currentUsername} = storeToRefs(useUserStore());
 const canEdit = (profile.username == currentUsername.value); 
 const editMode = ref(false);
 
-const postUpdated = ref(post.dateCreated !== post.dateUpdated); 
+const boardUpdated = ref(board.dateCreated !== board.dateUpdated); 
 
 function switcMode(){
-  editMode.value = true; 
+  // editMode.value = true; 
+  console.log("toggled hehe"); 
 }
-console.log(props);
 </script>
 
 <template>
@@ -28,24 +28,22 @@ console.log(props);
       <RouterLink :to="{ name: 'Profile', params: { user: profile.username} }"
        class="routerLink">{{ profile.username }}</RouterLink>
       <article class="timestamp">
-        <p v-if="postUpdated">Edited on: 
-        {{ formatDate(post.dateUpdated? post.dateUpdated: new Date()) }}</p>
-        <p v-else>Created on: {{ formatDate(post.dateCreated? post.dateCreated: new Date() ) }}</p>
+        <p v-if="boardUpdated">Edited on: 
+        {{ formatDate(board.dateUpdated? board.dateUpdated: new Date()) }}</p>
+        <p v-else>Created on: {{ formatDate(board.dateCreated? board.dateCreated: new Date() ) }}</p>
       </article>
       <button v-if="canEdit" class="editButton" v-on:click="switcMode()">Edit</button>
     </div>
     <section class="postContent">
-      <p class="heading" style="margin: 1em 0;">{{ post.caption }}</p>
-        <img class="postImage" :src="post.content" style="margin-bottom: 1em;" />
-      <p></p>
       <span v-for="tag in tags">
-        <RouterLink :to="{name: 'PostList', params: {tagname: tag.tagName}}" 
-        class="tag">{{ tag.tagName }}</RouterLink>
+        <!-- <RouterLink :to="{name: 'PostList', params: {tagname: tag.tagName}}" 
+        class="tag">{{ tag.tagName }}</RouterLink> -->
+        <span class = "tag">{{tag.tagName}}</span>
       </span>
     </section>
   </section>
 
-  <EditPostForm class="postBlock" :post="post" :tags="tags" v-else />
+  <!-- <EditPostForm class="postBlock" :post="post" :tags="tags" v-else /> -->
   
 </template>
 

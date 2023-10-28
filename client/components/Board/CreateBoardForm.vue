@@ -36,6 +36,10 @@ async function updateBoardWithTag(_id:ObjectId, tag: string) {
 }
 
 async function createBoard () {
+  if(caption.value === ""){
+    alert("Must have caption for board");
+    return; 
+  }
   loaded.value = false;
   try {
     const response = await fetchy("/api/boards", "POST", {
