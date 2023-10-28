@@ -20,10 +20,25 @@ export const useBoardStore = defineStore(
             });
             return result.boards; 
         };
+        const checkPostInBoard = async(boardid:string, postid:string) => {
+            const url = "/api/boards/post/"+boardid+"&"+postid;
+            return await fetchy(url, "GET"); 
+        };
+        const addPostToBoard = async(boardid:string, postid:string) => {
+            const url = "/api/boards/"+boardid+"&"+postid;
+            return await fetchy(url, "PATCH"); 
+        };
+        const removePostFromBoard = async(boardid:string, postid:string) => {
+            const url = "/api/boards/"+boardid+"&"+postid
+            return await fetchy(url, "PUT"); 
+        };
         return {
             getAuthorBoards,
             getBoardID, 
             getBoardTags,
+            checkPostInBoard,
+            addPostToBoard,
+            removePostFromBoard,
         };
       },
       { persist: false },

@@ -173,6 +173,17 @@ class Routes {
     return { msg: created.msg, board: await Responses.board(created.content) };
   }
 
+  @Router.get("/boards/post/:_board&:_post")
+  async postInBoard(_board: ObjectId, _post: ObjectId) {
+    console.log("here");
+    try{
+      await Board.postInBoard(_board, _post);
+      return true; 
+    } catch(error) { // does not raise alarm 
+      return false; 
+    }
+  }
+
   @Router.patch("/boards/:_board&:_post")
   async addPostToBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);

@@ -40,6 +40,7 @@ async function createBoard () {
     alert("Must have caption for board");
     return; 
   }
+  // CHECK BOARD NAMES WHEN CREATING 
   loaded.value = false;
   try {
     const response = await fetchy("/api/boards", "POST", {
