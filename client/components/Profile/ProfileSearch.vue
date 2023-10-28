@@ -20,7 +20,7 @@ async function search(){
   loaded.value = false; 
   if(author.value){
     console.log("sending req for: ", author.value);
-    profile = await getProfile(author.value); 
+    profile.value = await getProfile(author.value); 
     loaded.value = true; 
   }
 }
