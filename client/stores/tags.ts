@@ -13,9 +13,18 @@ export const useTagStore = defineStore(
             const res = await fetchy("/api/tags/posts", "PATCH", { body: {filter: {tagName, author: userid} } });
             return res.posts;
         }; 
+        const getBoardsUnderTag = async (tagName: string) => {
+            return (await fetchy("/api/tags/boards", "PATCH", { body: {filter: {tagName}} })).boards;
+        }; 
+        const gettBoardsUnderTagUser = async (tagName: string, userid: string) => {
+            const res = await fetchy("/api/tags/boards", "PATCH", { body: {filter: {tagName, author: userid} } });
+            return res.boards;
+        }; 
         return {
             getPostsUnderTag,
-            getPostsUnderTagUser
+            getPostsUnderTagUser,
+            getBoardsUnderTag,
+            gettBoardsUnderTagUser
         };
       },
       { persist: false },

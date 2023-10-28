@@ -193,3 +193,6 @@ form{
   text-transform: uppercase;
   letter-spacing: 1px;
 }
+section .listPost{
+  break-inside: avoid-column;
+}

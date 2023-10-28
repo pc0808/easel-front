@@ -2,6 +2,7 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import BoardListView from "../views/BoardListView.vue";
 import BoardView from "../views/BoardView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
@@ -62,6 +63,11 @@ const router = createRouter({
       path: "/board/id=:id",
       name: "Board",
       component: BoardView,
+    },
+    {
+      path: "/boardlist/user=:user?&tagname=:tagname?",
+      name: "BoardList",
+      component: BoardListView,
     },
     {
       path: "/:catchAll(.*)",
