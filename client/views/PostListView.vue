@@ -15,7 +15,6 @@ const username = router.currentRoute._value.params.user;
 const tagName = router.currentRoute._value.params.tagname;
 let loaded = ref(false); 
 let posts = ref<Array<Record<string, string>>>([]); 
-console.log("username: ", username, "tagName: ", tagName); 
 
 onBeforeMount( async() =>{
     if(tagName){
@@ -26,7 +25,6 @@ onBeforeMount( async() =>{
         //we only have the tag instances, so we must correlate the tag.content objectid
         //with the actual post (getting post by that objectid)
         for(const tag in tags){
-            console.log(tag);
             posts.value.push( await getPostID(tags[tag].content) );
         }
     } else if(username){ //ONLY AUTHOR 

@@ -43,7 +43,6 @@ function boardPopup(){
 }
 async function addToBoard(board: Record<string, any>){
   loaded.value = false;
-  console.log("clicked");
   await addPostToBoard(board._id.toString(), post._id.toString()); 
   board.inBoard = true; 
   loaded.value = true; 
