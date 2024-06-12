@@ -11,18 +11,26 @@ const image = ref("");
 const tags = ref<Array<string>>([]); 
 let loaded = ref(true); 
 let caption = "";
+let tagInput = ref(""); 
 
 function setImage(event: any){
   image.value = event.target.files[0]; 
 }
 function addTag(event: any){
   if(event.key !== "Enter") return; //only want this func to go thru on enter presses 
-  const tagInput = document.getElementById("aligned-tags");
-  const currTag = (tagInput?.value)? tagInput?.value:  ""; 
-  if(tagInput && tagInput?.value){ 
+  
+  if(tagInput.value.indexOf(' ') >= 0) {
+    alert("Cannot have spaces in tags"); 
+    return; 
+  }
+  
+  if(tagInput.value){ 
     //make sure tagInput isn't blank and that not already inputted 
-    if(new Set(tags.value).has(currTag) ) return; 
-    tags.value.push(currTag);
+    if(new Set(tags.value).has(tagInput.value) ) {
+      alert("Already inputted"); 
+      return; 
+    }
+    tags.value.push(tagInput.value);
     tagInput.value = ""; //
   }
 }
@@ -79,7 +87,7 @@ async function createPost () {
       <span v-for="tag in tags">
         <span class="tag" :onclick="deleteTag">{{ tag }}</span>
       </span>
-      <input id="aligned-tags" type="text" :onkeypress="addTag" placeholder ="Type here"/>
+      <input v-model="tagInput" type="text" :onkeypress="addTag" placeholder ="Type here"/>
     </div>
     <button type="submit" :onclick=createPost class="pure-button-primary pure-button">Create Post</button>
   </div>

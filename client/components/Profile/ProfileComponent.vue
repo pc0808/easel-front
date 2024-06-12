@@ -83,7 +83,8 @@ async function followUnfollow() {
   <section class="profileBlock">
     <img :src=props.profile.avatar class="avatar" style="float:left">
     <span class ="profileInfo">
-      <span class="username">{{ props.profile.username }}</span>
+      <RouterLink :to="{ name: 'Profile', params: { user: props.profile.username} }"
+       class="routerLink">{{ props.profile.username }}</RouterLink>
       <p>{{ props.profile.biography }}</p>
 
       <span v-if="loaded">

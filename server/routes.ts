@@ -152,22 +152,18 @@ class Routes {
   /////////////////////////////////
   // BOARDS CONCEPT DOWN BELOW ////
   /////////////////////////////////
-  @Router.get("/boards")
-  async getBoards(author?: string) {
-    let boards;
-    if (author) {
-      const id = (await User.getUserByUsername(author))._id;
-      boards = await Board.getByAuthor(id);
-    } else {
-      boards = await Board.getContents({});
-    }
+  @Router.get("/boards/:author")
+  async getBoards(author: string) {
+    const id = (await User.getUserByUsername(author))._id;
+    const boards = await Board.getByAuthor(id);
+    
     return Responses.boards(boards);
   }
 
-  @Router.get("/boards/:_id")
+  @Router.get("/boards/id/:_id")
   async getBoardByID(_id: ObjectId) {
     const board = await Board.getContentByID(_id);
-    return { msg: board.msg, board: board.content };
+    return { msg: board.msg, board: await Responses.board(board.content)  };
   }
 
   @Router.post("/boards")
@@ -177,16 +173,35 @@ class Routes {
     return { msg: created.msg, board: await Responses.board(created.content) };
   }
 
-  @Router.patch("/boards/:_board&:_post")
+  @Router.patch("/boards/:_id")
+  async updateBoard(session: WebSessionDoc, _id: ObjectId, update: Partial<ContentDoc<ObjectId[]>>) {
+    const user = WebSession.getUser(session);
+    await Board.isAuthor(user, _id);
+    return await Board.update(_id, update);
+  }
+
+  @Router.get("/boards/post/:_board&:_post")
+  async postInBoard(_board: ObjectId, _post: ObjectId) {
+    console.log("here");
+    try{
+      await Board.postInBoard(_board, _post);
+      return true; 
+    } catch(error) { // does not raise alarm 
+      return false; 
+    }
+  }
+
+  @Router.put("/boards/:_board&:_post")
   async addPostToBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);
+    //console.log("in server", user);
     await Board.isAuthor(user, _board);
     await Post.getContentByID(_post); //will check that this post actually exists 
 
     return await Board.addPostToBoard(_board, _post);
   }
 
-  @Router.delete("/boards/:_id")
+  @Router.delete("/boards/delete/:_id")
   async deleteBoard(session: WebSessionDoc, _id: ObjectId) {
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _id);
@@ -196,7 +211,7 @@ class Routes {
     return Board.delete(_id);
   }
 
-  @Router.put("/boards/:_board&:_post")
+  @Router.delete("/boards/:_board&:_post")
   async deletePostFromBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _board);
@@ -219,10 +234,11 @@ class Routes {
 
   @Router.patch("/tags/boards")
   async getTaggedBoards(filter: Partial<TagsDoc>) {
-    const boards = (await BoardTags.getContentFilter(filter)).tags
+    const boards = (await BoardTags.getContentFilter(filter)).tags;
+    console.log(await Responses.formatTags(boards));
     return {
       msg: "Read successful",
-      boards: Responses.formatTags(boards),
+      boards: await Responses.formatTags(boards),
     };
   }
 

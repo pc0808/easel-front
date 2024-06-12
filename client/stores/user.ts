@@ -52,7 +52,8 @@ export const useUserStore = defineStore(
       resetStore();
     };
 
-    const getUserByUsername = async(username: string) => {
+    const getUserByUsername = async(username: string | string[]) => {
+      if(username.constructor === Array) return;
       return await fetchy("/api/users/"+username, "GET", {}); 
     }
 
