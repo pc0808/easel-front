@@ -24,7 +24,7 @@ onBeforeMount(async () => {
   if(isLoggedIn.value){
     boards.value = await getAuthorBoards(currentUsername.value); 
     for(const board of boards.value){
-      const inBoard = await checkPostInBoard(board._id.toString(), post._id.toString()); 
+      const inBoard = await checkPostInBoard(board._id, post._id); 
       board.inBoard = inBoard; 
     }
   }
@@ -49,7 +49,7 @@ async function addToBoard(board: Record<string, any>){
 }
 async function removeFromBoard(board:Record<string, any>){
   loaded.value = false;
-  await removePostFromBoard(board._id.toString(), post._id.toString()); 
+  await removePostFromBoard(board._id, post._id); 
   board.inBoard = false; 
   loaded.value = true; 
 }
