@@ -2,14 +2,16 @@
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount } from "vue";
+import { computed, onBeforeMount, ref } from "vue";
 import { RouterLink, RouterView, useRoute } from "vue-router";
 
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
 const userStore = useUserStore();
 const { isLoggedIn } = storeToRefs(userStore);
+const { currentUsername } = useUserStore(); 
 const { toast } = storeToRefs(useToastStore());
+let loaded = ref(false); 
 
 // Make sure to update the session before mounting the app in case the user is already logged in
 onBeforeMount(async () => {
@@ -18,7 +20,9 @@ onBeforeMount(async () => {
   } catch {
     // User is not logged in
   }
+  loaded.value = true; 
 });
+
 </script>
 
 <template>
@@ -33,16 +37,20 @@ onBeforeMount(async () => {
       </div>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ curr: currentRouteName == 'Home' }"> Home </RouterLink>
+          <RouterLink class="navLink" :to="{ name: 'Home' }" :class="{ curr: currentRouteName == 'Home' }"> Home </RouterLink>
         </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ curr: currentRouteName == 'Settings' }"> Settings </RouterLink>
+        <li v-if="loaded && isLoggedIn">
+          <RouterLink class="navLink" :to="{ name: 'Settings' }" :class="{ curr: currentRouteName == 'Settings' }"> Settings </RouterLink>
         </li>
         <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ curr: currentRouteName == 'Login' }"> Login </RouterLink>
+          <RouterLink class="navLink" :to="{ name: 'Login' }" :class="{ curr: currentRouteName == 'Login' }"> Login </RouterLink>
         </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Profile' }" :class="{ curr: currentRouteName == 'Profile' }"> Profile </RouterLink>
+        <li v-if="loaded && isLoggedIn">
+          <RouterLink class="navLink" :to="{ name: 'Profile', params: { user: currentUsername} }" 
+          :class="{ curr: currentRouteName == 'Profile' }"> Profile </RouterLink>
+        </li>
+        <li v-if="loaded && isLoggedIn">
+          <RouterLink class="navLink" :to="{ name: 'Search' }" :class="{ curr: currentRouteName == 'Search' }"> Search </RouterLink>
         </li>
       </ul>
     </nav>
@@ -73,7 +81,6 @@ nav {
 img {
   height: 2em;
 }
-
 a {
   font-size: large;
   color: #ddd;
@@ -94,7 +101,9 @@ ul {
   font-weight: bold;
   color: aqua;
 }
-
+.navLink:hover{
+  color:aqua;
+}
 h1.title{
   font-size: 200%;
 }

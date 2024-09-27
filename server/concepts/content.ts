@@ -31,6 +31,7 @@ export default class ContentConcept<T>{
   }
 
   async getContents(query: Filter<ContentDoc<T>>) {
+    console.log(query); 
     const contents = await this.contents.readMany(query, {
       sort: { dateUpdated: -1 },
     });
@@ -43,7 +44,7 @@ export default class ContentConcept<T>{
 
   async getContentByID(_id: ObjectId) {
     const content = await this.contents.readOne({ _id });
-    if (!content) throw new NotFoundError("Content w this ID does not exist");
+    if (!content) throw new NotFoundError("Content with this ID does not exist");
     else return { msg: "read successful", content: content }
   }
 

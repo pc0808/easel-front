@@ -4,11 +4,14 @@ import { Router, getExpressRouter } from "./framework/router";
 import { ObjectId } from "mongodb";
 import { Board, BoardTags, Following, Post, PostTags, Profile, User, WebSession } from "./app";
 import { ContentDoc, ContentOptions } from "./concepts/content";
+import { NotAllowedError } from "./concepts/errors";
 import { ProfileDoc } from "./concepts/profile";
 import { TagsDoc } from "./concepts/tags";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 import Responses from "./responses";
+
+const imageLink = "https://firebasestorage.googleapis.com/v0/b/easel-e38a5.appspot.com";
 
 class Routes {
   ///////////////////////////////////////
@@ -28,6 +31,11 @@ class Routes {
   @Router.get("/users/:username")
   async getUser(username: string) {
     return await User.getUsers(username);
+  }
+
+  @Router.get("/users/id/:_id")
+  async getUserByID(_id: ObjectId) {
+    return await User.getUserById(_id);
   }
 
   @Router.post("/users")
@@ -92,7 +100,6 @@ class Routes {
 
   @Router.patch("/profiles")
   async updateProfile(session: WebSessionDoc, update: Partial<ProfileDoc>) {
-    console.log(update, update.avatar, update.biography);
     const user = WebSession.getUser(session);
     const profile = (await Profile.getProfileByUser(user))._id;
     return await Profile.update(profile, update); //assures new usrn is okay 
@@ -101,19 +108,17 @@ class Routes {
   ////////////////////////////////
   // POSTS CONCEPT DOWN BELOW ////
   ////////////////////////////////
-  @Router.get("/posts")
-  async getPosts(author?: string) {
+  @Router.get("/posts/:author")
+  async getPosts(author: string) {
     let posts;
-    if (author) {
-      const id = (await User.getUserByUsername(author))._id;
-      posts = await Post.getByAuthor(id);
-    } else {
-      posts = await Post.getContents({});
-    }
+    
+    const id = (await User.getUserByUsername(author))._id;
+    posts = await Post.getByAuthor(id);
+    
     return Responses.posts(posts);
   }
 
-  @Router.get("/posts/:_id")
+  @Router.get("/posts/id/:_id")
   async getPostByID(_id: ObjectId) {
     const post = await Post.getContentByID(_id);
     return { msg: post.msg, post: await Responses.post(post.content) };
@@ -122,6 +127,7 @@ class Routes {
   @Router.post("/posts")
   async createPost(session: WebSessionDoc, caption: string, content: string, options?: ContentOptions) {
     const user = WebSession.getUser(session);
+    if(content.indexOf(imageLink) !== 0) throw new NotAllowedError("Image not uploaded properly"); 
     const created = await Post.create(user, caption, content, options);
     return { msg: created.msg, post: await Responses.post(created.content) };
   }
@@ -146,22 +152,18 @@ class Routes {
   /////////////////////////////////
   // BOARDS CONCEPT DOWN BELOW ////
   /////////////////////////////////
-  @Router.get("/boards")
-  async getBoards(author?: string) {
-    let boards;
-    if (author) {
-      const id = (await User.getUserByUsername(author))._id;
-      boards = await Board.getByAuthor(id);
-    } else {
-      boards = await Board.getContents({});
-    }
+  @Router.get("/boards/:author")
+  async getBoards(author: string) {
+    const id = (await User.getUserByUsername(author))._id;
+    const boards = await Board.getByAuthor(id);
+    
     return Responses.boards(boards);
   }
 
-  @Router.get("/boards/:_id")
+  @Router.get("/boards/id/:_id")
   async getBoardByID(_id: ObjectId) {
     const board = await Board.getContentByID(_id);
-    return { msg: board.msg, board: board.content };
+    return { msg: board.msg, board: await Responses.board(board.content)  };
   }
 
   @Router.post("/boards")
@@ -171,16 +173,35 @@ class Routes {
     return { msg: created.msg, board: await Responses.board(created.content) };
   }
 
-  @Router.patch("/boards/:_board&:_post")
+  @Router.patch("/boards/:_id")
+  async updateBoard(session: WebSessionDoc, _id: ObjectId, update: Partial<ContentDoc<ObjectId[]>>) {
+    const user = WebSession.getUser(session);
+    await Board.isAuthor(user, _id);
+    return await Board.update(_id, update);
+  }
+
+  @Router.get("/boards/post/:_board&:_post")
+  async postInBoard(_board: ObjectId, _post: ObjectId) {
+    console.log("here");
+    try{
+      await Board.postInBoard(_board, _post);
+      return true; 
+    } catch(error) { // does not raise alarm 
+      return false; 
+    }
+  }
+
+  @Router.put("/boards/:_board&:_post")
   async addPostToBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);
+    //console.log("in server", user);
     await Board.isAuthor(user, _board);
     await Post.getContentByID(_post); //will check that this post actually exists 
 
     return await Board.addPostToBoard(_board, _post);
   }
 
-  @Router.delete("/boards/:_id")
+  @Router.delete("/boards/delete/:_id")
   async deleteBoard(session: WebSessionDoc, _id: ObjectId) {
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _id);
@@ -190,7 +211,7 @@ class Routes {
     return Board.delete(_id);
   }
 
-  @Router.put("/boards/:_board&:_post")
+  @Router.delete("/boards/:_board&:_post")
   async deletePostFromBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _board);
@@ -203,24 +224,27 @@ class Routes {
   ////////////////////////////////
   @Router.patch("/tags/posts")
   async getTaggedPosts(filter: Partial<TagsDoc>) {
-    console.log(filter, filter.tagName, filter.author, filter.content);
-    console.log((await PostTags.getContentFilter({ author: filter.author })).tags);
+    // console.log((await PostTags.getContentFilter({ author: filter.author })).tags);
+    const posts = (await PostTags.getContentFilter(filter)).tags;  
     return {
       msg: "Read successful",
-      posts: (await PostTags.getContentFilter(filter)).tags,
+      posts: await Responses.formatTags(posts),
     };
   }
 
   @Router.patch("/tags/boards")
   async getTaggedBoards(filter: Partial<TagsDoc>) {
+    const boards = (await BoardTags.getContentFilter(filter)).tags;
+    console.log(await Responses.formatTags(boards));
     return {
       msg: "Read successful",
-      boards: (await BoardTags.getContentFilter(filter)).tags,
+      boards: await Responses.formatTags(boards),
     };
   }
 
   @Router.post("/tags/posts/:tagName&:_post")
   async addTagToPost(session: WebSessionDoc, _post: ObjectId, tagName: string) {
+    console.log("server side", _post, tagName); 
     const user = WebSession.getUser(session);
     await Post.isAuthor(user, _post);
     await PostTags.create(tagName, user, _post);
@@ -261,14 +285,26 @@ class Routes {
     return { msg: "successfully updated", tags: await Responses.getTags(tagsLeft) };
   }
 
-  ////////////////////////////////
-  // FRIENDS CONCEPT DOWN BELOW //
-  ////////////////////////////////
+  //////////////////////////////////
+  // FOLLOWING CONCEPT DOWN BELOW //
+  //////////////////////////////////
   @Router.get("/following/:username")
   async getFollowing(username: string) {
     const userID = (await User.getUserByUsername(username))._id;
     const users = await Following.getFollowing(userID);
     return { msg: "read successful", users: await Responses.following(users, false) };
+  }
+  @Router.patch("/following/:user1&:user2")
+  async followUser2(user1: string, user2: string) {
+    const user1id = (await User.getUserByUsername(user1))._id;
+    const user2id = (await User.getUserByUsername(user2))._id;
+    const following = await Following.getFollowing(user1id);
+    
+    let followUser2 = false; 
+    for(const user of await Responses.following(following, false)){ 
+      if(user.toString() === user2id.toString()) followUser2 = true; 
+    }
+    return { msg: "read successful", followUser2 };
   }
   @Router.get("/followers/:username")
   async getFollowers(username: string) {
@@ -276,13 +312,13 @@ class Routes {
     const users = await Following.getFollowers(userID);
     return { msg: "read successful", users: await Responses.following(users, true) }
   }
-  @Router.post("/following/:username")
+  @Router.post("/follow/:username")
   async followUser(session: WebSessionDoc, username: string) {
     const user1 = WebSession.getUser(session);
     const user2 = (await User.getUserByUsername(username))._id;
     return await Following.followUser(user1, user2);
   }
-  @Router.post("/followers/:username")
+  @Router.post("/unfollow/:username")
   async unfollowUser(session: WebSessionDoc, username: string) {
     const user1 = WebSession.getUser(session);
     const user2 = (await User.getUserByUsername(username))._id;

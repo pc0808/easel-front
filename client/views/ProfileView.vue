@@ -1,11 +1,55 @@
 <script setup lang="ts">
-import ProfileForm from "@/components/Profile/ProfileForm.vue";
-import ProfileSearch from "../components/Profile/ProfileSearch.vue";
+import { useBoardStore } from "@/stores/board";
+import { usePostStore } from "@/stores/post";
+import { onBeforeMount, ref } from "vue";
+import ProfileComponent from "../components/Profile/ProfileComponent.vue";
+import router from "../router";
+import { useProfileStore } from "../stores/profile";
+
+const {getProfile} = useProfileStore(); 
+const { getAuthorPosts} = usePostStore(); 
+const { getAuthorBoards } = useBoardStore();
+const username = router.currentRoute.value.params.user;
+
+let posts = ref<Array<Record<string, any>>>([]);
+let boards = ref<Array<Record<string, any>>>([]); 
+let loaded = ref(false); 
+let profile = ref<Record<string, string>>();
+
+onBeforeMount(async () => {
+  profile = await getProfile(username); 
+  posts.value = await getAuthorPosts(username);  
+  boards.value = await getAuthorBoards(username); 
+  for(const post of posts.value) {
+    post.profile = profile; 
+  }
+  for(const board of boards.value) {
+    board.profile = profile; 
+  }
+  loaded.value = true; 
+});
+
 </script>
 
 <template>
-  <main class="column">
-    <ProfileForm />
-    <ProfileSearch />
-  </main>
+  <h1>Profile</h1>
+  <section v-if="loaded">
+    <ProfileComponent v-if="loaded" :profile="profile" />
+    <section class="profileLink">
+      <span class="heading">See Posts</span><RouterLink class="routerLink"
+      :to="{name: 'PostList', params: {user: username }}"> >> </RouterLink>
+    </section>
+    <section class="profileLink">
+      <span class="heading">See Boards</span><RouterLink class="routerLink"
+      :to="{name: 'BoardList', params: {user: username }}"> >> </RouterLink>
+    </section>
+  </section>
+  <h1 v-else>Profile Not Found Yet</h1>
 </template>
+<style scoped>
+.profileLink{
+  margin: 5% 20%;
+  border-bottom: solid 2px #ddd;
+  padding-bottom: 1em;
+}
+</style>

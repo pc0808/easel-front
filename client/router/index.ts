@@ -2,10 +2,15 @@ import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
+import BoardListView from "../views/BoardListView.vue";
+import BoardView from "../views/BoardView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import PostListView from "../views/PostListView.vue";
+import PostView from "../views/PostView.vue";
 import ProfileView from "../views/ProfileView.vue";
+import SearchView from "../views/SearchView.vue";
 import SettingView from "../views/SettingView.vue";
 
 const router = createRouter({
@@ -35,13 +40,34 @@ const router = createRouter({
       },
     },
     {
-      path: "/profile",
+      path: "/profile/user=:user",
       name: "Profile",
       component: ProfileView,
-      meta: { requiresAuth: true },
-      beforeEnter: (to, from) => {
-        const { isLoggedIn } = storeToRefs(useUserStore());
-      },
+    },
+    {
+      path: "/search",
+      name: "Search",
+      component: SearchView,
+    },
+    {
+      path: "/post/id=:id",
+      name: "Post",
+      component: PostView,
+    },
+    {
+      path: "/postlist/user=:user?&tagname=:tagname?",
+      name: "PostList",
+      component: PostListView,
+    },
+    {
+      path: "/board/id=:id",
+      name: "Board",
+      component: BoardView,
+    },
+    {
+      path: "/boardlist/user=:user?&tagname=:tagname?",
+      name: "BoardList",
+      component: BoardListView,
     },
     {
       path: "/:catchAll(.*)",
