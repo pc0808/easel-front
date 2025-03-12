@@ -1,4 +1,4 @@
-# 6.1040 Social Media Frontend Starter Code
+# Easek Social Media App
 
 ## Getting Started
 
