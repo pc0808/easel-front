@@ -1,4 +1,4 @@
-# Easek Social Media App
+# Easel Social Media App
 
 ## Getting Started
 
