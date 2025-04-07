@@ -168,13 +168,15 @@ class Routes {
 
   @Router.post("/boards")
   async createBoard(session: WebSessionDoc, caption: string) {
+    console.log("create board", caption);
     const user = WebSession.getUser(session);
     const created = await Board.create(user, caption, []);
     return { msg: created.msg, board: await Responses.board(created.content) };
   }
 
-  @Router.patch("/boards/:_id")
+  @Router.post("/boards/update/:_id")
   async updateBoard(session: WebSessionDoc, _id: ObjectId, update: Partial<ContentDoc<ObjectId[]>>) {
+    console.log("update board", update);
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _id);
     return await Board.update(_id, update);
@@ -194,7 +196,6 @@ class Routes {
   @Router.put("/boards/:_board&:_post")
   async addPostToBoard(session: WebSessionDoc, _board: ObjectId, _post: ObjectId) {
     const user = WebSession.getUser(session);
-    //console.log("in server", user);
     await Board.isAuthor(user, _board);
     await Post.getContentByID(_post); //will check that this post actually exists 
 

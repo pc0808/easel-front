@@ -35,7 +35,7 @@ const updateBoard = async () => {
   loaded.value = false; 
 
   try{
-    await fetchy(`/api/boards/${board._id}`, "PATCH", {body: {update: {caption: caption.value}}} ); 
+    await fetchy(`/api/boards/update/${board._id}`, "POST", {body: {update: {caption: caption.value}}} ); 
 
     const oldTags = tags.map((tag:any) => tag.tagName);
     const oldSet = new Set(oldTags);

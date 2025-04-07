@@ -19,6 +19,7 @@ const postUpdated = ref(post.dateCreated !== post.dateUpdated);
 let loaded = ref(false); 
 let addMode = ref(false); 
 let boards = ref<Array<Record<string, string>>>([]); 
+let addBoardText = ref<string>("Add to board");
 
 onBeforeMount(async () => {
   if(isLoggedIn.value){
@@ -37,8 +38,10 @@ function switchMode(){
 function boardPopup(){
   if(addMode.value){
     addMode.value = false; 
+    addBoardText.value = "Add to board";
   } else{
     addMode.value = true; 
+    addBoardText.value = "Close board list";
   }
 }
 async function addToBoard(board: Record<string, any>){
@@ -72,7 +75,7 @@ async function removeFromBoard(board:Record<string, any>){
       <p class="heading" style="margin: 1em 0;">{{ post.caption }}</p>
       <section v-if="isLoggedIn">
         <button class="editButton" style="float:right; margin-top: -3.5em;" v-if="loaded" v-on:click="boardPopup()">
-          Add to board
+          {{addBoardText}}
         </button>
         <table v-if="loaded && addMode" class="boards">
           <tr v-for="board in boards" class="boardInstance">
@@ -80,6 +83,7 @@ async function removeFromBoard(board:Record<string, any>){
             <button v-if="board.inBoard" class="editButton" v-on:click="removeFromBoard(board)">Remove</button>
             <button v-else class="editButton" v-on:click="addToBoard(board)">Add</button>
           </tr>
+          <div v-if="boards.length===0" style="margin: -5% 0;color: aqua;">Create a board to add this post!</div>
         </table>
         <span v-if="!loaded" class="editButton">Loading...</span>
       </section>

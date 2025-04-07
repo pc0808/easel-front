@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
-import ContentConcept from "./content";
-import { ContentOptions, ContentDoc } from "./content";
+import ContentConcept, { ContentDoc, ContentOptions } from "./content";
 import { BadValuesError, NotAllowedError } from "./errors";
 
 export default class BoardConcept extends ContentConcept<ObjectId[]>{
@@ -16,7 +15,7 @@ export default class BoardConcept extends ContentConcept<ObjectId[]>{
         };
     }
     async update(_id: ObjectId, update: Partial<ContentDoc<ObjectId[]>>) {
-        if(update.caption){
+        if(update.caption && update.caption !== (await this.getContentByID(_id)).content.caption){
             await this.boardNameUnique(update.caption); 
         }
         await this.contents.updateOne({ _id }, update);

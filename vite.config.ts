@@ -9,6 +9,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": join(__dirname, "client"),
+      'vue': 'vue/dist/vue.esm-bundler',
     },
   },
   server: {
