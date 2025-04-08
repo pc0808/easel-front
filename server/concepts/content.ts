@@ -38,6 +38,14 @@ export default class ContentConcept<T>{
     return contents;
   }
 
+  async getMostRecent(){
+    const contents = await this.contents.readMany({}, {
+      sort: { dateUpdated: -1 },
+      limit: 10,
+    }); 
+    return {msg: "Up to most recent 10 posts retrieved!", content: contents};
+  }
+
   async getByAuthor(author: ObjectId) {
     return await this.getContents({ author });
   }

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { defineProps, ref, onBeforeMount } from "vue";
+import { defineProps, onBeforeMount, ref } from "vue";
+import { usePostStore } from '../../stores/post';
+import { useProfileStore } from "../../stores/profile";
 import { useUserStore } from '../../stores/user';
-import { usePostStore} from '../../stores/post';
 import { formatDate } from "../../utils/formatDate";
+import PostListComponent from "../Post/PostListComponent.vue";
 import EditBoardForm from "./EditBoardForm.vue";
-import PostListComponent from "../Post/PostListComponent.vue"; 
 
 const props = defineProps(["board", "tags", "profile"]);
 const board = props.board;
@@ -14,6 +15,7 @@ const profile = props.profile;
 
 const {currentUsername} = storeToRefs(useUserStore());
 const {getPostID} = usePostStore();
+const {getProfile} = useProfileStore();
 const canEdit = (profile.username == currentUsername.value); 
 let editMode = ref(false);
 let loaded = ref(false);
@@ -29,7 +31,6 @@ onBeforeMount(async() => {
     for(const post of board.content)
         posts.value.push(await getPostID(post));
     
-    for(const post of posts.value) post.profile = profile;
     console.log(posts.value);
     loaded.value = true; 
 }); 
@@ -82,6 +83,6 @@ p {
   letter-spacing: 1px;
 }
 .postContent{
-    margin: 2em 0;
+    margin: 4em 0;
 }
 </style>

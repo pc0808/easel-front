@@ -9,7 +9,7 @@ export const usePostStore = defineStore(
         const getAuthorPosts = async (author: string | string[]) => {
             if(author.constructor === Array) return;
             const url = "/api/posts/"+author ; 
-            return await fetchy(url, "GET", { });
+            return (await fetchy(url, "GET", { })).posts;
         }; 
         const getPostID = async(_id: string | string[]) => {
             if(_id.constructor === Array) return;

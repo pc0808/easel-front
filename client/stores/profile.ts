@@ -11,7 +11,7 @@ export const useProfileStore = defineStore(
 
     const getProfile = async (username: string | string[]) => {
         if(username.constructor === Array) return;
-        const results = await fetchy("/api/profiles/"+username, "GET", { });
+        const results = (await fetchy("/api/profiles/"+username, "GET", { })).profile;
         results.username = username; 
         return results;
     }; 

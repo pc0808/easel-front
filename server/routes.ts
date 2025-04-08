@@ -95,7 +95,7 @@ class Routes {
   async getProfileByUsername(username: string) {
     //userID: 
     const _id = (await User.getUserByUsername(username))._id;
-    return await Profile.getProfileByUser(_id);
+    return {msg: "Read successful", profile: await Profile.getProfileByUser(_id)};
   }
 
   @Router.patch("/profiles")
@@ -114,14 +114,25 @@ class Routes {
     
     const id = (await User.getUserByUsername(author))._id;
     posts = await Post.getByAuthor(id);
+    console.log(posts);
+    console.log(Responses.posts(posts))
     
-    return Responses.posts(posts);
+    return { msg: "Read successful", posts: await Responses.posts(posts) };
   }
 
   @Router.get("/posts/id/:_id")
   async getPostByID(_id: ObjectId) {
     const post = await Post.getContentByID(_id);
     return { msg: post.msg, post: await Responses.post(post.content) };
+  }
+
+  @Router.get("/recent/posts")
+  async getRecentPosts() {
+    const posts = await Post.getMostRecent();
+    console.log("get most recent posts");
+    console.log(posts)
+    console.log(await Responses.posts(posts.content));
+    return { msg: posts.msg, posts:  Responses.posts(posts.content)}
   }
 
   @Router.post("/posts")
@@ -154,10 +165,12 @@ class Routes {
   /////////////////////////////////
   @Router.get("/boards/:author")
   async getBoards(author: string) {
+    console.log("inside getBoards routes function");
     const id = (await User.getUserByUsername(author))._id;
     const boards = await Board.getByAuthor(id);
-    
-    return Responses.boards(boards);
+    console.log("boards: " , boards);
+    console.log(await Responses.boards(boards) );
+    return {msg: "Read successful", boards: await Responses.boards(boards)};
   }
 
   @Router.get("/boards/id/:_id")
@@ -245,7 +258,6 @@ class Routes {
 
   @Router.post("/tags/posts/:tagName&:_post")
   async addTagToPost(session: WebSessionDoc, _post: ObjectId, tagName: string) {
-    console.log("server side", _post, tagName); 
     const user = WebSession.getUser(session);
     await Post.isAuthor(user, _post);
     await PostTags.create(tagName, user, _post);

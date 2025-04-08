@@ -11,21 +11,11 @@ const { getAuthorPosts} = usePostStore();
 const { getAuthorBoards } = useBoardStore();
 const username = router.currentRoute.value.params.user;
 
-let posts = ref<Array<Record<string, any>>>([]);
-let boards = ref<Array<Record<string, any>>>([]); 
 let loaded = ref(false); 
 let profile = ref<Record<string, string>>();
 
 onBeforeMount(async () => {
-  profile = await getProfile(username); 
-  posts.value = await getAuthorPosts(username);  
-  boards.value = await getAuthorBoards(username); 
-  for(const post of posts.value) {
-    post.profile = profile; 
-  }
-  for(const board of boards.value) {
-    board.profile = profile; 
-  }
+  profile.value = await getProfile(username);
   loaded.value = true; 
 });
 

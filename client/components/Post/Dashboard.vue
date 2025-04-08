@@ -18,15 +18,14 @@ const { getAuthorPosts } = usePostStore();
 onBeforeMount( async () =>{
     const url = "/api/following/"+currentUsername.value;
     const following = (await fetchy(url, "GET")).users; 
+    console.log(following);
 
     for(const userid of following){ //go thru everyone i am following 
         const author = (await getUserById(userid)).username; 
-        const profile = (await getProfile(author)); 
         const userPosts = (await getAuthorPosts(author));
         console.log(userPosts);
-        for(const post of userPosts) post.profile = profile; 
         
-        posts.push(userPosts);
+        posts.push(...userPosts);
     }
     loaded.value = true; 
 }); 

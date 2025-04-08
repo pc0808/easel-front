@@ -36,6 +36,24 @@ export default class ProfileConcept {
     async getAllProfiles() {
         return await this.profiles.readMany({});
     }
+    async authorsToProfiles(ids: ObjectId[]) { 
+        const profmap: Map<ObjectId, ProfileDoc> = new Map();
+        const profiles: Array<ProfileDoc> = []; 
+        
+        for(const id of ids){
+            if(profmap.has(id)){
+                profiles.push(profmap.get(id)!);
+            } else{
+                const res = await this.profiles.readOne({user: id});
+                if(!res){
+                    throw new NotFoundError(`Sorry, could not find profile!`);
+                }
+                profiles.push(res);
+            }
+        }
+       return profiles
+     }
+
     async delete(_id: ObjectId) {
         await this.profiles.deleteOne({ _id: _id });
     }

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { User } from "./app";
+import { Profile, User } from "./app";
 import { ContentAuthorNotMatchError, ContentDoc } from "./concepts/content";
 import { FollowingDoc } from "./concepts/following";
 import { AlreadyFriendsError, FriendNotFoundError, FriendRequestAlreadyExistsError, FriendRequestNotFoundError } from "./concepts/friend";
@@ -19,7 +19,8 @@ export default class Responses {
       return post;
     }
     const author = await User.getUserById(post.author);
-    return { ...post, author: author.username };
+    const profile = await Profile.getProfileByUser(post.author);
+    return { ...post, author: author.username, avatar: profile.avatar };
   }
   /**
    * Convert ContentDoc<Array<ObjectId>> into more readable format for the frontend by converting the author id into a username.
@@ -29,15 +30,18 @@ export default class Responses {
       return board;
     }
     const author = await User.getUserById(board.author);
-    return { ...board, author: author.username };
+    const profile = await Profile.getProfileByUser(board.author);
+    return { ...board, author: author.username, avatar: profile.avatar };
   }
 
   /**
    * Same as {@link post} but for an array of ContentDoc<string> for improved performance.
    */
   static async posts(posts: ContentDoc<string>[]) {
-    const authors = await User.idsToUsernames(posts.map((post) => post.author));
-    return posts.map((post, i) => ({ ...post, author: authors[i] }));
+    const ids = posts.map((post) => post.author);
+    const authors = await User.idsToUsernames(ids);
+    const profiles = await Profile.authorsToProfiles(ids);
+    return posts.map((post, i) => ({ ...post, author: authors[i], avatar: profiles[i] ? profiles[i].avatar : "" }));
   }
 
   /**
@@ -53,8 +57,10 @@ export default class Responses {
    * Same as {@link board} but for an array of ContentDoc<Array<ObjectId>> for improved performance.
    */
   static async boards(boards: ContentDoc<Array<ObjectId>>[]) {
-    const authors = await User.idsToUsernames(boards.map((board) => board.author));
-    return boards.map((board, i) => ({ ...board, author: authors[i] }));
+    const ids = boards.map((board) => board.author);
+    const authors = await User.idsToUsernames(ids);
+    const profiles = await Profile.authorsToProfiles(ids);
+    return boards.map((board, i) => ({ ...board, author: authors[i], avatar: profiles[i] ? profiles[i].avatar : "" })); 
   }
 
   /**

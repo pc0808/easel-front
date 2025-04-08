@@ -9,7 +9,9 @@ export const useBoardStore = defineStore(
         const getAuthorBoards = async (author: string | string[]) => {
             if(author.constructor === Array) return;
             const url = "/api/boards/"+author ; 
-            return await fetchy(url, "GET", { });
+            console.log("in board store: ", url); 
+            console.log(await fetchy(url, "GET", { }));
+            return (await fetchy(url, "GET", { })).boards;
         }; 
         const getBoardID = async(_id: string | string[]) => {
             if(_id.constructor === Array) return;
