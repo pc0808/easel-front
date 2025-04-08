@@ -37,7 +37,7 @@ onBeforeMount( async() =>{
 
     //BoardListComponent also requires author: 
     for(const board in boards.value){
-        boards.value[board].profile = await getProfile(boards.value[board].author); 
+        boards.value[board].avatar = (await getProfile(boards.value[board].author)).avatar; 
     }
 
     loaded.value = true; 

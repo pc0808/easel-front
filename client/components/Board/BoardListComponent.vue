@@ -14,7 +14,7 @@ const boards = sortDateUpdated(props.boards);
             <RouterLink :to="{name: 'Board', params: {id: board._id}}" class="routerLink">
                 {{ board.caption }}
             </RouterLink>
-            <img :src="board.profile.avatar" class="listAvatar" style="margin-top:1em"/>
+            <img :src="board.avatar" class="listAvatar" style="margin-top:1em"/>
             <section class="postListText">
                 <RouterLink :to="{name: 'Profile', params: {user: board.author}}" 
                 class="listAuthor">{{ board.author }}</RouterLink><br>

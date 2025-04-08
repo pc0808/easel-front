@@ -35,7 +35,7 @@ onBeforeMount( async() =>{
 
     //PostListComponent also requires author: 
     for(const post in posts.value){
-        posts.value[post].profile = await getProfile(posts.value[post].author); 
+        posts.value[post].avatar = (await getProfile(posts.value[post].author)).avatar; 
     }
 
     loaded.value = true; 

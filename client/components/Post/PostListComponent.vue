@@ -6,7 +6,6 @@ import { sortDateUpdated } from '../../utils/formatPosts';
 const props:any = defineProps(["posts"]); // EACH POST MUST ALSO HAVE INFO FOR AUTHOR'S PROFILE 
 const posts = sortDateUpdated(props.posts); //sorts by latest 
 
-
 </script>
 <template>
     <section class="postColumns">
@@ -15,7 +14,7 @@ const posts = sortDateUpdated(props.posts); //sorts by latest
                 <img :src="post.content" class="imageList">
             </RouterLink>
             
-            <img :src="post.profile.avatar" class="listAvatar"/>
+            <img :src="post.avatar" class="listAvatar"/>
             <section class="postListText">
                 <RouterLink :to="{name: 'Profile', params: {user: post.author}}" 
                 class="listAuthor">{{ post.author }}</RouterLink><br>
