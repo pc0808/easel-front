@@ -47,5 +47,6 @@ onBeforeMount( async() =>{
 <template>
     <BoardListComponent v-if="loaded" :boards="boards" />
     <h3 v-else class="loadingText">Loading...</h3>
+    <h3 v-if="loaded && boards.length === 0" class="loadingText">No boards found</h3>
 </template>
 <style scoped></style>

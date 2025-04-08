@@ -13,7 +13,6 @@ import { connectDb } from "../server/db";
 import router from "../server/routes";
 
 const app = express();
-module.exports = app;
 const PORT = process.env.PORT || 3000;
 app.use(logger("dev"));
 

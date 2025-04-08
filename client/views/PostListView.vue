@@ -45,5 +45,6 @@ onBeforeMount( async() =>{
 <template>
     <PostListComponent v-if="loaded" :posts="posts" />
     <h3 v-else class="loadingText">Loading...</h3>
+    <h3 v-if="loaded && posts.length == 0" class="loadingText">No posts found</h3>
 </template>
 <style scoped></style>
