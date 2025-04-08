@@ -16,7 +16,7 @@ const username = router.currentRoute.value.params.user;
 const tagName = router.currentRoute.value.params.tagname;
 let loaded = ref(false); 
 let boards = ref<Array<Record<string, string>>>([]); 
-console.log("username: ", username, "tagName: ", tagName); 
+// console.log("username: ", username, "tagName: ", tagName); 
 
 onBeforeMount( async() =>{
     if(tagName){

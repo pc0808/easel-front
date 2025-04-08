@@ -14,5 +14,6 @@
     },
     "outDir": "../dist/client"
   },
-  "include": ["./**/*.ts", "./**/*.vue"]
+  "include": ["./**/*.ts", "./**/*.vue"],
+  "exclude": ["components/Board/BoardListComponent.vue", "components/Post/PostListComponent.vue"]
 }
