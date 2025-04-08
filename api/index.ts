@@ -12,7 +12,8 @@ import MongoStore from "connect-mongo";
 import { connectDb } from "../server/db";
 import router from "../server/routes";
 
-export const app = express();
+const app = express();
+module.exports = app;
 const PORT = process.env.PORT || 3000;
 app.use(logger("dev"));
 

@@ -40,6 +40,7 @@ class Routes {
 
   @Router.post("/users")
   async createUser(session: WebSessionDoc, username: string, password: string) {
+    console.log("routes.ts users post"); 
     WebSession.isLoggedOut(session);
     const user = await User.create(username, password);
     const userID = (await User.getUserByUsername(username))._id;
@@ -49,6 +50,7 @@ class Routes {
 
   @Router.patch("/users")
   async updateUser(session: WebSessionDoc, update: Partial<UserDoc>) {
+    console.log("routes.ts users patch"); 
     const user = WebSession.getUser(session);
     return await User.update(user, update); //assures new usrn is okay 
   }
