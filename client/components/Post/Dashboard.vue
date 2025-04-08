@@ -28,7 +28,6 @@ onBeforeMount( async () =>{
         
         posts.push(userPosts);
     }
-    console.log(posts);
     loaded.value = true; 
 }); 
 

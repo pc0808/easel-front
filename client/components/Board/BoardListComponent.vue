@@ -4,8 +4,21 @@ import { smallDate } from '../../utils/formatDate';
 import { sortDateUpdated } from '../../utils/formatPosts';
 
 const props = defineProps(["boards"]); // EACH BOARD MUST ALSO HAVE INFO FOR AUTHOR'S PROFILE 
-const boards = sortDateUpdated(props.boards); //sorts by latest 
-console.log(boards); 
+const boards: Record<string, string | Record<string,string> | Record<string,string>[]>[] = sortDateUpdated(props.boards); 
+//sorts by latest 
+//type allows for nested objects & array of content objects 
+
+// interface Board{
+//     author: string;
+//     caption: string;
+//     content: [Post];
+//     dateCreated: Date;
+//     dateUpdated: Date;
+//     options: any;
+//     profile: {
+//         avatar: string;
+//     }
+// }
 
 </script>
 <template>
