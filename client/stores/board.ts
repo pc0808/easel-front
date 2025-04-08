@@ -34,7 +34,7 @@ export const useBoardStore = defineStore(
         const removePostFromBoard = async(boardid:string, postid:string) => {
             const url = "/api/boards/"+boardid+"&"+postid;
             console.log(boardid, postid);
-            return await fetchy(url, "PATCH", {}); 
+            return await fetchy(url, "DELETE", {}); 
         };
         return {
             getAuthorBoards,
