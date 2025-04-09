@@ -8,7 +8,7 @@ export interface TagsDoc extends BaseDoc {
   content: ObjectId;
 }
 
-const NOT_ALLOWED_TAGS: Set<string> = new Set(["", "easel"]);
+const NOT_ALLOWED_TAGS: Set<string> = new Set(["", "easel", "fuck"]);
 
 export default class TagsConcept<T> {
   public readonly tagged;
@@ -97,5 +97,6 @@ export default class TagsConcept<T> {
 
   private sanitizeFilter(filter: Partial<TagsDoc>) {
     if (filter.tagName) filter.tagName = filter.tagName.toLowerCase();
+    if (filter.author) filter.author = new ObjectId(filter.author);
   }
 }

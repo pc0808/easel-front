@@ -7,20 +7,26 @@ export const useTagStore = defineStore(
     () => {
         const getPostsUnderTag = async (tagName: string | string[]) => {
             if(tagName.constructor === Array) return;
-            return (await fetchy("/api/tags/posts", "PATCH", { body: {filter: {tagName}} })).posts;
+            console.log("get posts under tag");
+            const res = await fetchy("/api/tags/posts", "PATCH", { body: {filter: {tagName}} });
+            return res.posts;
         }; 
         const getPostsUnderTagUser = async (tagName: string | string[], userid: string) => {
             //const filter = {tagName, author: userid}; 
             if(tagName.constructor === Array) return;
+            console.log("get posts under tag AND user", {filter: {tagName, author: userid} });
             const res = await fetchy("/api/tags/posts", "PATCH", { body: {filter: {tagName, author: userid} } });
             return res.posts;
         }; 
         const getBoardsUnderTag = async (tagName: string | string[]) => {
             if(tagName.constructor === Array) return;
-            return (await fetchy("/api/tags/boards", "PATCH", { body: {filter: {tagName}} })).boards;
+            console.log("get boards under tag");
+            const res = await fetchy("/api/tags/boards", "PATCH", { body: {filter: {tagName}} });
+            return res.boards;
         }; 
-        const gettBoardsUnderTagUser = async (tagName: string | string[], userid: string) => {
+        const getBoardsUnderTagUser = async (tagName: string | string[], userid: string) => {
             if(tagName.constructor === Array) return;
+            console.log("get boards under tag AND user");
             const res = await fetchy("/api/tags/boards", "PATCH", { body: {filter: {tagName, author: userid} } });
             return res.boards;
         }; 
@@ -28,7 +34,7 @@ export const useTagStore = defineStore(
             getPostsUnderTag,
             getPostsUnderTagUser,
             getBoardsUnderTag,
-            gettBoardsUnderTagUser
+            getBoardsUnderTagUser
         };
       },
       { persist: false },

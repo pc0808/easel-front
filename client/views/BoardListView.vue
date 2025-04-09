@@ -6,7 +6,7 @@ import { useBoardStore } from '../stores/board';
 import { useTagStore } from "../stores/tags";
 import { useUserStore } from '../stores/user';
 
-const {getBoardsUnderTag, gettBoardsUnderTagUser } = useTagStore();
+const {getBoardsUnderTag, getBoardsUnderTagUser } = useTagStore();
 const {getUserByUsername} = useUserStore(); 
 const {getAuthorBoards, getBoardID} = useBoardStore();
 
@@ -18,7 +18,9 @@ let boards = ref<Array<Record<string, string>>>([]);
 
 onBeforeMount( async() =>{
     if(tagName){
-        const tags = (username)? await gettBoardsUnderTagUser(tagName, 
+        console.log("inside 1st if");
+        console.log(await getUserByUsername(username));
+        const tags = (username)? await getBoardsUnderTagUser(tagName, 
                                     (await getUserByUsername(username))._id): 
                                     await getBoardsUnderTag(tagName);  
         //we only have the tag instances, so we must correlate the tag.content objectid

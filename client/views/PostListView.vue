@@ -18,7 +18,7 @@ let posts = ref<Array<Record<string, string>>>([]);
 
 onBeforeMount( async() =>{
     if(tagName){
-        //const posts = await getPostsUnderTag(tagName); 
+        console.log("inside post list view");
         const tags = (username)? await getPostsUnderTagUser(tagName, 
                                     (await getUserByUsername(username))._id): 
                                     await getPostsUnderTag(tagName);  

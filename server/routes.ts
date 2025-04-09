@@ -30,7 +30,7 @@ class Routes {
 
   @Router.get("/users/:username")
   async getUser(username: string) {
-    return await User.getUsers(username);
+    return await User.getUserByUsername(username);
   }
 
   @Router.get("/users/id/:_id")
@@ -114,9 +114,6 @@ class Routes {
     
     const id = (await User.getUserByUsername(author))._id;
     posts = await Post.getByAuthor(id);
-    console.log(posts);
-    console.log(Responses.posts(posts))
-    
     return { msg: "Read successful", posts: await Responses.posts(posts) };
   }
 
@@ -165,11 +162,8 @@ class Routes {
   /////////////////////////////////
   @Router.get("/boards/:author")
   async getBoards(author: string) {
-    console.log("inside getBoards routes function");
     const id = (await User.getUserByUsername(author))._id;
     const boards = await Board.getByAuthor(id);
-    console.log("boards: " , boards);
-    console.log(await Responses.boards(boards) );
     return {msg: "Read successful", boards: await Responses.boards(boards)};
   }
 
@@ -181,7 +175,6 @@ class Routes {
 
   @Router.post("/boards")
   async createBoard(session: WebSessionDoc, caption: string) {
-    console.log("create board", caption);
     const user = WebSession.getUser(session);
     const created = await Board.create(user, caption, []);
     return { msg: created.msg, board: await Responses.board(created.content) };
@@ -189,7 +182,6 @@ class Routes {
 
   @Router.post("/boards/update/:_id")
   async updateBoard(session: WebSessionDoc, _id: ObjectId, update: Partial<ContentDoc<ObjectId[]>>) {
-    console.log("update board", update);
     const user = WebSession.getUser(session);
     await Board.isAuthor(user, _id);
     return await Board.update(_id, update);
@@ -197,7 +189,6 @@ class Routes {
 
   @Router.get("/boards/post/:_board&:_post")
   async postInBoard(_board: ObjectId, _post: ObjectId) {
-    console.log("here");
     try{
       await Board.postInBoard(_board, _post);
       return true; 
