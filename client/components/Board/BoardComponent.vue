@@ -30,8 +30,7 @@ function switchMode(){
 onBeforeMount(async() => {
     for(const post of board.content)
         posts.value.push(await getPostID(post));
-    
-    console.log(posts.value);
+
     loaded.value = true; 
 }); 
 

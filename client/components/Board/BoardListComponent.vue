@@ -4,8 +4,6 @@ import { smallDate } from '../../utils/formatDate';
 import { sortDateUpdated } from '../../utils/formatPosts';
 
 const props = defineProps(["boards"]); // EACH BOARD MUST ALSO HAVE INFO FOR AUTHOR'S PROFILE 
-console.log("board list comp");
-console.log(props.boards);
 const boards = sortDateUpdated(props.boards); 
 //sorts by latest 
 

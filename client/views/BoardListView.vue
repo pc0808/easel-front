@@ -14,12 +14,9 @@ const username = router.currentRoute.value.params.user;
 const tagName = router.currentRoute.value.params.tagname;
 let loaded = ref(false); 
 let boards = ref<Array<Record<string, string>>>([]); 
-// console.log("username: ", username, "tagName: ", tagName); 
 
 onBeforeMount( async() =>{
     if(tagName){
-        console.log("inside 1st if");
-        console.log(await getUserByUsername(username));
         const tags = (username)? await getBoardsUnderTagUser(tagName, 
                                     (await getUserByUsername(username))._id): 
                                     await getBoardsUnderTag(tagName);  
@@ -29,16 +26,12 @@ onBeforeMount( async() =>{
             boards.value.push( await getBoardID(tags[tag].content) );
         }
     } else if(username){ //ONLY AUTHOR
-        console.log("in second if") ; 
-        console.log(await getAuthorBoards(username));
         boards.value = await getAuthorBoards(username); //automatically writes author as well 
     } else{
         void router.push({name: "not-found"}); // will not search boards if no param given 
     }
 
     loaded.value = true; 
-    console.log("boards list view")
-    console.log(boards.value);
 }); 
 
 </script>
