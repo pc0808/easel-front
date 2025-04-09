@@ -60,6 +60,18 @@ const router = createRouter({
       component: PostListView,
     },
     {
+      path: "/postlist/user=:user*",
+      redirect: to => {
+        return { path: "/postlist/user=" + to.params.user + "&tagname=" };
+      }
+    },
+    {
+      path: "/postlist/tagname=:tagname*",
+      redirect: to => {
+        return { path: "/postlist/user=&tagname=" + to.params.tagname };
+      }
+    },
+    {
       path: "/board/id=:id",
       name: "Board",
       component: BoardView,
@@ -68,6 +80,18 @@ const router = createRouter({
       path: "/boardlist/user=:user?&tagname=:tagname?",
       name: "BoardList",
       component: BoardListView,
+    },
+    {
+      path: "/boardlist/user=:user*",
+      redirect: to =>{
+        return { path: "/boardlist/user=" + to.params.user + "&tagname=" };
+      }
+    },
+    {
+      path: "/boardlist/tagname=:tagname*",
+      redirect: to =>{
+        return { path: "/boardlist/user=&tagname=" + to.params.tagname };
+      }
     },
     {
       path: "/:catchAll(.*)",
